@@ -1,4 +1,4 @@
-insertions:
+subito_list_page_items:
   css: '.item-card'
   multiple: true
   type: Text
@@ -13,11 +13,14 @@ insertions:
       css: 'img'
       type: Attribute
       attribute: src
-    link:
+    url:
       css: 'a.link'
       type: Link
     city:
       css: '.index-module_container__noDE3 span:nth-of-type(1)'
+      type: Text
+    sold:
+      css: '.item-sold-badge'
       type: Text
     state:
       css: '.index-module_container__noDE3 span:nth-of-type(2)'

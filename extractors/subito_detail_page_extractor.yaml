@@ -1,0 +1,24 @@
+price:
+  css: '.index-module_price__025qD'
+  type: Text
+description:
+  css: '.grid_description__rEv3i p'
+  type: Text
+title:
+  css: 'h1'
+  type: Text
+shipping_available:
+  css: '.shipping-badge'
+  type: Text
+sold:
+  css: '.item-sold-badge'
+  type: Text
+location:
+  css: '.AdInfo_ad-info__location__nd8JQ'
+  type: Text
+time:
+  css: '.index-module_insertion-date__MU4AZ'
+  type: Text
+condition:
+  css: '.feature-list_value__pgiul'
+  type: Text
