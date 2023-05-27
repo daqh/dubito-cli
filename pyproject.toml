@@ -1,0 +1,17 @@
+[project]
+name = "subito_tracker"
+version = "1.0.0"
+description = "Subito tracker is a tool to track the price of a product on subito.it"
+readme = "README.md"
+authors = [{ name = "Valerio Di Pasquale", email = "valeriodipasq@gmail.com" }]
+license = { file = "LICENSE" }
+keywords = ["subito", "scraper"]
+dependencies = [
+    "selectorlib == 0.16.0",
+    "requests",
+    "requests-cache == 1.0.1"
+]
+requires-python = ">=3.7"
+
+[project.scripts]
+subito_tracker = "subito_tracker.__main__:main"
