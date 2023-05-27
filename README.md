@@ -6,9 +6,27 @@
 
 ## Project structure
 
-### Subito List Page pipeline
+### The pipeline
 
-A list page is a page that contains a list of items. For example, the list of all the items that match a query.
+The pipeline is the core of the project. It's a three step process in which we build a list page, extract the data from the list page and transform the data.
+
+1. [Build a list page](#1-build-a-list-page)
+
+    1.2. [Build a list page from a URL](#12-build-a-list-page-from-a-url)
+
+    1.2 [Build a list page from a query](#12-build-a-list-page-from-a-query)
+
+2. [Extract data of a list page](#2-extract-data-of-a-list-page)
+
+    2.1 [Extract data specifying the query](#21-extract-data-specifying-the-query)
+
+    2.2 [Extract data from a list page object](#22-extract-data-from-a-list-page-object)
+
+3. [Transform data of a list page](#3-transform-data-of-a-list-page)
+
+    3.1 [Transform data specifying the query](#31-transform-data-specifying-the-query)
+
+    3.2 [Transform data from an extracted list page object](#32-transform-data-from-an-extracted-list-page-object)
 
 You can build a list page from a URL or from a generic query in form of a string.
 
@@ -41,7 +59,7 @@ print(list_page.page_number)    # 1
 
 Once we have a list page, we can download the page data by simply instantiating the `ExtractedSubitoListPage` class.
 
-#### 2. Extract data of a list page
+#### 2 Extract data of a list page
 
 In the second step of the pipeline we extract the data from the list page. The extraction activity is the activity in which we perform an HTTP request to download the page data. This is the most expensive step of the pipeline in terms of time and resources.
 
@@ -75,7 +93,7 @@ list_page = SubitoQueryListPage("gtx 1070")
 extracted_list_page = ExtractedSubitoListPage(list_page)
 ```
 
-#### 3. Transform data of a list page
+#### 3 Transform data of a list page
 
 In the third and last step, we transform the data obtained from the list page.
 
