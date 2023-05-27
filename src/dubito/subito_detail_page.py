@@ -23,15 +23,22 @@ class SubitoDetailPage:
         ---------
         `url: str`
             The url of the page.
+        `identifier: str`
+            The identifier of the page.
         '''
         self.__url = url
+        self._identifier = self.url.split("-")[-1].split(".")[0]
 
     @property
     def url(self):
         return self.__url
     
+    @property
+    def identifier(self):
+        return self._identifier
+
     def __str__(self) -> str:
-        return f"({self.__class__.__name__}: {self.url})"
+        return f"({self.__class__.__name__}: {self.identifier})"
 
 class ExtractedSubitoDetailPage:
     '''
@@ -55,8 +62,8 @@ class ExtractedSubitoDetailPage:
         `detail_page: SubitoDetailPage`
             The SubitoDetailPage object to extract.
         '''
-        logging.info(f"Extracting {self}")
         self.__detail_page = detail_page
+        logging.info(f"Extracting {self}")
         response_text = simplified_get(detail_page.url)
         self.__response = response_text
     
@@ -67,6 +74,29 @@ class ExtractedSubitoDetailPage:
     @property
     def detail_page(self):
         return self.__detail_page
+    
+    def __str__(self) -> str:
+        return f"({self.__class__.__name__}: {self.detail_page})"
+    
+    @classmethod
+    def from_url(cls, url: str):
+        '''
+        # ExtractedSubitoDetailPage > From URL
+        Create an ExtractedSubitoDetailPage object from an url.
+
+        Arguments
+        ---------
+        `url: str`
+            The url of the page.
+
+        Example
+        -------
+        ```python
+        from subito import ExtractedSubitoDetailPage
+        extracted_detail_page = ExtractedSubitoDetailPage.from_url("https://www.subito.it/vi/180882013.htm")
+        ```
+        '''
+        return cls(SubitoDetailPage(url))
 
 class TransformedSubitoDetailPage:
     '''
@@ -100,6 +130,7 @@ class TransformedSubitoDetailPage:
         self.__subito_detail_page_item["sold"] = bool(self.__subito_detail_page_item["sold"])
         self.__subito_detail_page_item["city"] = self.__subito_detail_page_item["location"].split()[0]
         self.__subito_detail_page_item["state"] = self.__subito_detail_page_item["location"].split()[1]
+        self.__subito_detail_page_item["identifier"] = self.extracted_detail_page.detail_page.identifier
         del self.__subito_detail_page_item["location"]
     
     @property
@@ -109,3 +140,27 @@ class TransformedSubitoDetailPage:
     @property
     def subito_detail_page_item(self):
         return self.__subito_detail_page_item
+    
+    def __str__(self) -> str:
+        return f"({self.__class__.__name__}: {self.extracted_detail_page})"
+
+    @classmethod
+    def from_url(cls, url: str):
+        '''
+        # TransformedSubitoDetailPage > From URL
+        Create a TransformedSubitoDetailPage object from an url.
+
+        Arguments
+        ---------
+        `url: str`
+            The url of the page.
+
+        Example
+        -------
+        ```python
+        from subito import TransformedSubitoDetailPage
+
+        TransformedSubitoDetailPage.from_url("https://www.subito.it/vi/180882013.htm")
+        '''
+        return cls(ExtractedSubitoDetailPage.from_url(url))
+    
