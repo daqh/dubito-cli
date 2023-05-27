@@ -1,4 +1,5 @@
 from dubito.subito_list_page import SubitoListPage, ExtractedSubitoListPage, TransformedSubitoListPage, SubitoQueryListPage
+import pandas as pd
 
 def subito_list_page_item_iterator(list_page: SubitoListPage):
     '''
@@ -24,15 +25,15 @@ def subito_list_page_item_iterator(list_page: SubitoListPage):
         print(insertion)
     ```
     '''
+    current_list_page = list_page
     while True:
-        extracted_list_page = ExtractedSubitoListPage(list_page)
+        extracted_list_page = ExtractedSubitoListPage(current_list_page)
         transformed_list_page = TransformedSubitoListPage(extracted_list_page)
-        subito_list_page_items = transformed_list_page.subito_list_page_items
-        if not subito_list_page_items:
+        if not len(transformed_list_page):
             break
-        for subito_list_page_item in subito_list_page_items:
+        for subito_list_page_item in transformed_list_page:
             yield subito_list_page_item
-        list_page = SubitoQueryListPage(list_page.query, list_page.page_number + 1)
+        current_list_page = SubitoQueryListPage(current_list_page.query, current_list_page.page_number + 1)
 
 def subito_list_page_item_iterator_from_query(query: str):
     '''
@@ -86,7 +87,7 @@ def subito_list_page_item_list_from_query(query: str) -> list[dict]:
 def subito_list_page_item_list_from_url(url: str) -> list[dict]:
     '''
     # Get Transformed Subito List Page Item From URL
-    Gets a collection of insertions from an url.
+    Gets a collection of insertions from an url with duplicates.
 
     Arguments
     ---------
@@ -99,3 +100,23 @@ def subito_list_page_item_list_from_url(url: str) -> list[dict]:
         The list of insertions.
     '''
     return list(subito_list_page_item_iterator_from_url(url))
+
+def subito_list_page_item_dataframe_from_query(query: str) -> pd.DataFrame:
+    '''
+    # Get Transformed Subito List Page Item Dataframe From Query
+    Gets a collection of insertions from a query withouth duplicates.
+
+    Arguments
+    ---------
+    `query: str`
+        The query to search.
+
+    Returns
+    -------
+    `pd.DataFrame`
+        The dataframe of insertions.
+    '''
+    df = pd.DataFrame(subito_list_page_item_list_from_query(query))
+    df.set_index("identifier", inplace=True)
+    df = df[~df.index.duplicated(keep='first')]
+    return df
