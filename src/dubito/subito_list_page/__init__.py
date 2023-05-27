@@ -252,6 +252,15 @@ class TransformedSubitoListPage:
 
     def __str__(self) -> str:
         return f"({self.__class__.__name__}: {self.extracted_subito_list_page})"
+    
+    def __iter__(self):
+        return iter(self.subito_list_page_items)
+    
+    def __getitem__(self, index):
+        return self.subito_list_page_items[index]
+    
+    def __len__(self):
+        return len(self.subito_list_page_items)
 
     @classmethod
     def from_url(cls, url: str):
