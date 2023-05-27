@@ -1,7 +1,7 @@
 import urllib.parse
 from datetime import datetime
 from selectorlib import Extractor
-from subito_tracker.utils import simplified_get, extractors_directory
+from dubito.utils import simplified_get, extractors_directory
 import logging
 
 class SubitoListPage:

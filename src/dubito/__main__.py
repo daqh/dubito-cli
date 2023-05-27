@@ -5,7 +5,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import logging
 import argparse
-from subito_tracker.subito_list_page.iterators import subito_list_page_item_list_from_query
+from dubito.subito_list_page.iterators import subito_list_page_item_list_from_query
 
 parser = argparse.ArgumentParser(description='Get the insertions from a query.')
 parser.add_argument('--query', type=str, help='The query to search.', required=True)

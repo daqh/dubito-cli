@@ -1,4 +1,4 @@
-from subito_tracker.subito_list_page import SubitoListPage, ExtractedSubitoListPage, TransformedSubitoListPage, SubitoQueryListPage
+from dubito.subito_list_page import SubitoListPage, ExtractedSubitoListPage, TransformedSubitoListPage, SubitoQueryListPage
 
 def subito_list_page_item_iterator(list_page: SubitoListPage):
     '''

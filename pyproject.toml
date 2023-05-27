@@ -1,5 +1,5 @@
 [project]
-name = "subito_tracker"
+name = "dubito"
 version = "1.0.0"
 description = "Subito tracker is a tool to track the price of a product on subito.it"
 readme = "README.md"
@@ -14,4 +14,4 @@ dependencies = [
 requires-python = ">=3.7"
 
 [project.scripts]
-subito_tracker = "subito_tracker.__main__:main"
+dubito = "dubito.__main__:main"
