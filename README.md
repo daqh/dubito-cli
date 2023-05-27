@@ -12,7 +12,7 @@ The pipeline is the core of the project. It's a three step process in which we b
 
 1. [Build a list page](#1-build-a-list-page)
 
-    1.2. [Build a list page from a URL](#12-build-a-list-page-from-a-url)
+    1.1. [Build a list page from a URL](#11-build-a-list-page-from-a-url)
 
     1.2 [Build a list page from a query](#12-build-a-list-page-from-a-query)
 
