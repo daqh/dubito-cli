@@ -15,6 +15,8 @@ class SubitoListPage:
         The url of the page.
     `query: str`
         The query of the page.
+    `page_number: int`
+        The number of the page.
     '''
 
     def __init__(self, url):
@@ -85,7 +87,7 @@ class SubitoQueryListPage(SubitoListPage):
     ## Attributes
     `url: str`
         The url of the page.
-    `number: int`
+    `number: int = 1`
         The number of the page.
 
     ## Example
@@ -139,6 +141,48 @@ class ExtractedSubitoListPage:
     @property
     def subito_list_page(self):
         return self.__subito_list_page
+    
+    @classmethod
+    def from_url(cls, url: str):
+        '''
+        # Extracted Subito List Page > From URL
+        Create an ExtractedSubitoListPage object from an url.
+
+        Arguments
+        ---------
+        `url: str`
+            The url of the page.
+
+        Example
+        -------
+        ```python
+        from subito import ExtractedSubitoListPage
+
+        page = ExtractedSubitoListPage.from_url("https://www.subito.it/annunci-italia/vendita/usato/?q=rtx%202080&o=1")
+        ```
+        '''
+        return cls(SubitoListPage(url))
+
+    @classmethod
+    def from_query(cls, query: str, page_number: int = 1):
+        '''
+        # Extracted Subito List Page > From Query
+        Create an ExtractedSubitoListPage object from a query.
+
+        Arguments
+        ---------
+        `query: str`
+            The query of the page.
+
+        Example
+        -------
+        ```python
+        from subito import ExtractedSubitoListPage
+
+        page = ExtractedSubitoListPage.from_query("rtx 2080")
+        ```
+        '''
+        return cls(SubitoQueryListPage(query, page_number))
 
 class TransformedSubitoListPage:
     '''
@@ -202,3 +246,29 @@ class TransformedSubitoListPage:
     @property
     def extracted_subito_list_page(self):
         return self.__extracted_subito_list_page
+
+    @classmethod
+    def from_url(cls, url: str):
+        '''
+        # Transformed Subito List Page > From URL
+        Create a TransformedSubitoListPage object from an url.
+
+        Arguments
+        ---------
+        `url: str`
+            The url of the page.
+        '''
+        return cls(ExtractedSubitoListPage.from_url(url))
+
+    @classmethod
+    def from_query(cls, query: str, page_number: int = 1):
+        '''
+        # Transformed Subito List Page > From Query
+        Create a TransformedSubitoListPage object from a query.
+
+        Arguments
+        ---------
+        `query: str`
+            The query of the page.
+        '''
+        return cls(ExtractedSubitoListPage.from_query(query, page_number))

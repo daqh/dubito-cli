@@ -48,6 +48,18 @@ class TestExtractedSubitoListPage(unittest.TestCase):
         extracted_page = subito_list_page.ExtractedSubitoListPage(page)
         self.assertEqual(extracted_page.response, test_subito_list_page, "The text should be the same as the one passed to the constructor.")
 
+    @mock.patch("requests.get", return_value=mock.Mock(status_code=200, text=test_subito_list_page))
+    def test_extracted_subito_list_from_url(self, _):
+        url = "https://www.subito.it/annunci-italia/vendita/usato/?q=gtx%201070&o=2"
+        extracted_page = subito_list_page.ExtractedSubitoListPage.from_url(url)
+        self.assertEqual(extracted_page.response, test_subito_list_page, "The text should be the same as the one passed to the constructor.")
+
+    @mock.patch("requests.get", return_value=mock.Mock(status_code=200, text=test_subito_list_page))
+    def test_extracted_subito_list_from_query(self, _):
+        query = "gtx 1070"
+        extracted_page = subito_list_page.ExtractedSubitoListPage.from_query(query)
+        self.assertEqual(extracted_page.response, test_subito_list_page, "The text should be the same as the one passed to the constructor.")
+
 class TestTransformedSubitoListPage(unittest.TestCase):
 
     @mock.patch("requests.get", return_value=mock.Mock(status_code=200, text=test_subito_list_page))
