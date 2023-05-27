@@ -1,6 +1,7 @@
 import requests
+import pathlib
 
-extractors_directory = "extractors"
+extractors_directory = pathlib.Path(__file__).parent.absolute() / "extractors"
 
 def simplified_get(url):
     '''
