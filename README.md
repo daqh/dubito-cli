@@ -2,9 +2,9 @@
 
 Dubito is a Python package that allows you to track Subito ads. It's a simple tool that allows you to track ads by specifying a query and some filters. It's useful if you want to track a specific product or if you want to track a product in a specific region.
 
-## Example usage
+## Example usage of the CLI
 
-`python3 -m subito_tracker --query "gtx 1070" --include 1070 --exclude pc ryzen i7 --minimum-price 100 --install-cache`
+`dubito "gtx 1070" --include 1070 --exclude pc ryzen i7 --minimum-price 100 --install-cache`
 
 ## Project structure
 
