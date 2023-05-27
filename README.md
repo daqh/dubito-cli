@@ -1,12 +1,14 @@
 # Dubito
 
+Dubito is a Python package that allows you to track Subito ads. It's a simple tool that allows you to track ads by specifying a query and some filters. It's useful if you want to track a specific product or if you want to track a product in a specific region.
+
 ## Example usage
 
 `python3 -m subito_tracker --query "gtx 1070" --include 1070 --exclude pc ryzen i7 --minimum-price 100 --install-cache`
 
 ## Project structure
 
-### The pipeline
+### The pipeline of `SubitoPageList`
 
 The pipeline is the core of the project. It's a three step process in which we build a list page, extract the data from the list page and transform the data.
 
@@ -28,7 +30,6 @@ The pipeline is the core of the project. It's a three step process in which we b
 
     3.2 [Transform data from an extracted list page object](#32-transform-data-from-an-extracted-list-page-object)
 
-You can build a list page from a URL or from a generic query in form of a string.
 
 ---
 
@@ -101,11 +102,11 @@ extracted_list_page = ExtractedSubitoListPage(list_page)
 
 #### 3 Transform data of a list page
 
-In the third and last step, we transform the data obtained from the list page.
+In the third and last step, we transform the data obtained from the list page. This is the step in which we parse the HTML and extract the data.
 
 ##### 3.1 Transform data specifying the query
 
-As for the extraction, the easiest way to transform the data is to use the `TransformedSubitoListPage` methods. It allows you to specify the query or the entire url.
+As for the extraction, the easiest way to transform the data is to use the `TransformedSubitoListPage` methods. It allows you to specify the query or the entire url. 
 
 ```python
 # Specify the query
