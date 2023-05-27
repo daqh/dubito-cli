@@ -30,6 +30,8 @@ The pipeline is the core of the project. It's a three step process in which we b
 
 You can build a list page from a URL or from a generic query in form of a string.
 
+---
+
 #### 1 Build a list page
 
 This is the first step of the pipeline. You can build a list page from a URL or from a query. This object simply describes the list page, it doesn't download the page data. It's useful if you want to download the page data later.
@@ -56,6 +58,8 @@ print(list_page.query)          # gtx 1070
 
 print(list_page.page_number)    # 1
 ```
+
+---
 
 Once we have a list page, we can download the page data by simply instantiating the `ExtractedSubitoListPage` class.
 
@@ -92,6 +96,8 @@ from dubito.subito_list_page import ExtractedSubitoListPage, SubitoQueryListPage
 list_page = SubitoQueryListPage("gtx 1070")
 extracted_list_page = ExtractedSubitoListPage(list_page)
 ```
+
+---
 
 #### 3 Transform data of a list page
 
