@@ -6,6 +6,8 @@ Dubito is a Python package that allows you to track Subito ads. It's a simple to
 
 `dubito "gtx 1070" --include 1070 --exclude pc ryzen i7 --minimum-price 100 --install-cache`
 
+`dubito "gtx 1070" --install-cache -i 1070 -e pc i7 ryzen > subito_1070.csv`
+
 ## Project structure
 
 ### The pipeline of `SubitoPageList`
