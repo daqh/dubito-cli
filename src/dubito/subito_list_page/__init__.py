@@ -141,6 +141,9 @@ class ExtractedSubitoListPage:
     @property
     def subito_list_page(self):
         return self.__subito_list_page
+
+    def __str__(self) -> str:
+        return f"({self.__class__.__name__}: {self.subito_list_page})"
     
     @classmethod
     def from_url(cls, url: str):
@@ -246,6 +249,9 @@ class TransformedSubitoListPage:
     @property
     def extracted_subito_list_page(self):
         return self.__extracted_subito_list_page
+
+    def __str__(self) -> str:
+        return f"({self.__class__.__name__}: {self.extracted_subito_list_page})"
 
     @classmethod
     def from_url(cls, url: str):
