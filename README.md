@@ -4,6 +4,106 @@
 
 `python3 -m subito_tracker --query "gtx 1070" --include 1070 --exclude pc ryzen i7 --minimum-price 100 --install-cache`
 
-## Execute tests
+## Project structure
 
-`python3 -m unittest -v`
+### Subito List Page pipeline
+
+A list page is a page that contains a list of items. For example, the list of all the items that match a query.
+
+You can build a list page from a URL or from a generic query in form of a string.
+
+#### 1 Build a list page
+
+This is the first step of the pipeline. You can build a list page from a URL or from a query. This object simply describes the list page, it doesn't download the page data. It's useful if you want to download the page data later.
+
+##### 1.1 Build a list page from a URL
+
+```python
+from dubito.subito_list_page import SubitoListPage
+
+list_page = SubitoListPage("https://www.subito.it/annunci-italia/vendita/usato/?q=gtx+1070")
+```
+
+##### 1.2 Build a list page from a query
+
+Cons of this method is that you can't specify the region.
+
+```python
+from dubito.subito_list_page import SubitoQueryListPage
+
+list_page = SubitoQueryListPage("gtx 1070")
+print(list_page.url)            # https://www.subito.it/annunci-italia/vendita/usato/?q=gtx+1070
+
+print(list_page.query)          # gtx 1070
+
+print(list_page.page_number)    # 1
+```
+
+Once we have a list page, we can download the page data by simply instantiating the `ExtractedSubitoListPage` class.
+
+#### 2. Extract data of a list page
+
+In the second step of the pipeline we extract the data from the list page. The extraction activity is the activity in which we perform an HTTP request to download the page data. This is the most expensive step of the pipeline in terms of time and resources.
+
+##### 2.1 Extract data specifying the query
+
+Using the `ExtractedSubitoListPage` methods is the easiest way to extract data from a list page. It allows you to specify the query or the entire url.
+
+```python
+# Specify the query (cons: you can't specify the region)
+from dubito.subito_list_page import ExtractedSubitoListPage
+
+# You can specify the page number (default is 1)
+extracted_list_page = ExtractedSubitoListPage.from_query("gtx 1070", 3)
+```
+
+```python
+# Specifiy the url  (pros: you can specify the region)
+from dubito.subito_list_page import ExtractedSubitoListPage
+
+extracted_list_page = ExtractedSubitoListPage.from_url("https://www.subito.it/annunci-italia/vendita/usato/?q=gtx+1070")
+```
+
+##### 2.2 Extract data from a list page object
+
+Another way to extract data from a list page is to build it directly from a `SubitoListPage` object. This is useful if you want to download a list page that you already know.
+
+```python
+from dubito.subito_list_page import ExtractedSubitoListPage, SubitoQueryListPage
+
+list_page = SubitoQueryListPage("gtx 1070")
+extracted_list_page = ExtractedSubitoListPage(list_page)
+```
+
+#### 3. Transform data of a list page
+
+In the third and last step, we transform the data obtained from the list page.
+
+##### 3.1 Transform data specifying the query
+
+As for the extraction, the easiest way to transform the data is to use the `TransformedSubitoListPage` methods. It allows you to specify the query or the entire url.
+
+```python
+# Specify the query
+from dubito.subito_list_page import TransformedSubitoListPage
+
+transformed_list_page = TransformedSubitoListPage.from_query("gtx 1070", 22)
+```
+
+```python
+# Specifiy the url
+from dubito.subito_list_page import TransformedSubitoListPage
+
+transformed_list_page = TransformedSubitoListPage.from_url("https://www.subito.it/annunci-italia/vendita/usato/?q=gtx+1070")
+```
+
+##### 3.2 Transform data from an extracted list page object
+
+Another way to transform data from a list page is to build it directly from an `ExtractedSubitoListPage` object. This is useful if you want to transform a list page that you've already downloaded.
+
+```python
+from dubito.subito_list_page import TransformedSubitoListPage, ExtractedSubitoListPage
+
+extracted_list_page = ExtractedSubitoListPage.from_query("gtx 1070", 3)
+transformed_list_page = TransformedSubitoListPage(extracted_list_page)
+```
