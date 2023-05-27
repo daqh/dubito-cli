@@ -5,6 +5,11 @@ description = "Subito tracker is a tool to track the price of a product on subit
 readme = "README.md"
 authors = [{ name = "Valerio Di Pasquale", email = "valeriodipasq@gmail.com" }]
 license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
 keywords = ["subito", "scraper"]
 dependencies = [
     "selectorlib == 0.16.0",
