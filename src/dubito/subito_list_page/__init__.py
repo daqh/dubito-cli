@@ -3,6 +3,7 @@ from dubito.utils import simplified_get, extractors_directory
 from urllib.parse import urlparse, parse_qs
 from datetime import datetime
 from typing import Iterator
+import logging
 
 class SubitoListPage:
     '''A Subito list page.
@@ -260,7 +261,11 @@ def extract_subito_list_page(subito_list_page: SubitoListPage) -> ExtractedSubit
     ExtractedSubitoListPage
         The extracted Subito list page.
     '''
-    response_text = simplified_get(subito_list_page.url)
+    logging.info(f'Extracting Subito list page {subito_list_page.url}')
+    try:
+        response_text = simplified_get(subito_list_page.url)
+    except Exception as e:
+        response_text = str()
     return ExtractedSubitoListPage(subito_list_page, response_text)
 
 __subito_list_page_extractor = Extractor.from_yaml_file(f'{extractors_directory}/subito_list_page_extractor.yaml')
@@ -278,6 +283,7 @@ def transform_extracted_subito_list_page(extracted_subito_list_page: ExtractedSu
     TransformedSubitoListPage
         The transformed Subito list page.
     '''
+    logging.info(f'Transforming extracted Subito list page {extracted_subito_list_page.url}')
     response_text = extracted_subito_list_page.response_text
     result = __subito_list_page_extractor.extract(response_text)
     subito_list_page_items = result["subito_list_page_items"]
@@ -325,6 +331,12 @@ def subito_list_page_item_iterator(subito_list_page: SubitoListPage) -> Iterator
     ------
     dict
         The item of the Subito list page.
+
+    Example
+    -------
+    >>> from subito_list_page import subito_list_page_item_iterator
+    >>> for subito_list_page_item in subito_list_page_item_iterator(subito_list_page):
+    ...     print(subito_list_page_item)
     '''
     for transformed_subito_list_page in extract_and_transform_subito_list_page(subito_list_page):
         for subito_list_page_item in transformed_subito_list_page.subito_list_page_items:
