@@ -4,9 +4,13 @@ Dubito is a Python package that allows you to track Subito ads. It's a simple to
 
 ## Example usage of the CLI
 
-`dubito "gtx 1070" --include 1070 --exclude pc ryzen i7 --minimum-price 100 --install-cache`
+This will download the first page of the query `gtx 1070` and save the data in a CSV file.
 
-`dubito "gtx 1070" --install-cache -i 1070 -e pc i7 ryzen > subito_1070.csv`
+`dubito "gtx 1070" -i 1070 -e pc ryzen i7 -o csv --install-cache > 0_dubito_gtx_1070.csv`
+
+This will download the first page of the query `gtx 1070` and save the data in a JSON file.
+
+`dubito "gtx 1070" -i 1070 -e pc ryzen i7 -o json --install-cache > 0_dubito_gtx_1070.json`
 
 ## Project structure
 
