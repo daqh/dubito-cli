@@ -1,11 +1,9 @@
-from typing import Any
 import requests_cache
 from datetime import timedelta
 import logging
 import argparse
 from dubito.subito_list_page import subito_list_page_item_iterator, SubitoListPageQuery
-import csv
-import sys
+import pandas as pd
 
 def main():
 
@@ -16,22 +14,24 @@ def main():
     )
 
     parser.add_argument('query', type=str, help='The query to search.')
-    # parser.add_argument('-i', '--include', type=str, nargs="+", help='The query to search.', default=[])
-    # parser.add_argument('-e', '--exclude', type=str, nargs="+", help='The query to search.', default=[])
-    # parser.add_argument('--minimum-price', type=int, help='The minimum price.', default=0)
-    # parser.add_argument('--maximum-price', type=int, help='The maximum price.')
+    parser.add_argument('-i', '--include', type=str, nargs="+", help='Exclude keywords from the query to search.', default=[])
+    parser.add_argument('-e', '--exclude', type=str, nargs="+", help='Include keywords from the query to search.', default=[])
+    parser.add_argument('--minimum-price', type=int, help='The minimum price.')
+    parser.add_argument('--maximum-price', type=int, help='The maximum price.')
     parser.add_argument('--install-cache', action='store_true', help='Install the cache.', default=False)
     parser.add_argument('-v', '--verbose', action='store_true', help='Verbose.', default=False)
-    # parser.add_argument('-o', '--output', type=str, help='The output file.', default="csv")
+    parser.add_argument('-o', '--output', type=str, help='The output file.', default="csv")
+    parser.add_argument('--remove-outliers', action='store_true', help='Remove outliers.', default=False)
     args = parser.parse_args()
 
     query = args.query
-    # include = args.include
-    # exclude = args.exclude
-    # minimum_price = args.minimum_price
-    # maximum_price = args.maximum_price
+    include = args.include
+    exclude = args.exclude
+    minimum_price = args.minimum_price
+    maximum_price = args.maximum_price
     install_cache = args.install_cache
     verbose = args.verbose
+    remove_outliers = args.remove_outliers
 
     if verbose:
         logging.basicConfig(level=logging.INFO)
@@ -40,45 +40,46 @@ def main():
         logging.info("Installing cache")
         requests_cache.install_cache('dubito_cache', backend="sqlite", expire_after=timedelta(hours=1))
 
-    # insertions = subito_list_page_item_list_from_query(query)
-
     subito_list_page_items = list(subito_list_page_item_iterator(SubitoListPageQuery(query)))
 
-    # if minimum_price:
-    #     insertions = insertions[insertions["price"] >= minimum_price]
-    # if maximum_price:
-    #     insertions = insertions[insertions["price"] <= maximum_price]
+    df = pd.DataFrame(subito_list_page_items).set_index("identifier")
+    df = df[~df.index.duplicated(keep='first')]
 
-    # q = None
-    # for k in include:
-    #     if q is None:
-    #         q = insertions["title"].str.contains(k, case=False)
-    #     else:
-    #         q |= insertions["title"].str.contains(k, case=False)
-    # if q is not None:
-    #     insertions = insertions[q]
+    if minimum_price is not None:
+        df = df[df["price"] >= minimum_price]
 
-    # for k in exclude:
-    #     insertions = insertions[~insertions["title"].str.contains(k, case=False)]
+    if maximum_price is not None:
+        df = df[df["price"] <= maximum_price]
 
-    # insertions.dropna(subset=["price"], inplace=True)
+    q = None
+    for k in include:
+        if q is None:
+            q = df["title"].str.contains(k, case=False)
+        else:
+            q |= df["title"].str.contains(k, case=False)
+    if q is not None:
+        df = df[q]
 
-    # q1 = insertions['price'].quantile(0.25)
-    # q3 = insertions['price'].quantile(0.75)
-    # iqr = q3 - q1
-    # r = 1.5
-    # insertions = insertions[~((insertions['price'] < (q1 - r * iqr)) | (insertions['price'] > (q3 + r * iqr)))]
+    for k in exclude:
+        df = df[~df["title"].str.contains(k, case=False)]
 
-    # Covert to csv using csv module and print to console
-    # Don't use pandas to_csv method
-    # print(insertions.to_csv(index=False))
+    # df.dropna(subset=["price"], inplace=True)
 
-    # insertions.to_csv("output.csv", index=False)
+    if remove_outliers:
+        q1 = df['price'].quantile(0.25)
+        q3 = df['price'].quantile(0.75)
+        iqr = q3 - q1
+        r = 1.5
+        df = df[~((df['price'] < (q1 - r * iqr)) | (df['price'] > (q3 + r * iqr)))]
 
-    writer = csv.writer(sys.stdout, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    # writer.writerow()
-    for item in subito_list_page_items:
-        writer.writerow(item.values())
+        df = df.sort_values(by=["price"])
+
+    if args.output == "csv":
+        print(df.to_csv())
+    elif args.output == "json":
+        print(df.transpose().to_json())
+    else:
+        raise Exception("Invalid output format")
 
 if __name__ == "__main__":
     main()
