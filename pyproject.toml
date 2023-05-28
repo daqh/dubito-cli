@@ -10,7 +10,7 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
-keywords = ["subito", "scraper"]
+keywords = ["subito", "scraper", "dubito", "scraping"]
 dependencies = [
     "selectorlib == 0.16.0",
     "requests",
