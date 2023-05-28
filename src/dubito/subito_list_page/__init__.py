@@ -194,10 +194,10 @@ class TransformedSubitoListPage:
 
     Attributes
     ----------
-    `url: str`
-        The url of the page.
-    `text: str`
-        The text of the page.
+    `subito_list_page_items: List[SubitoListItem]`
+        The list of items in the page.
+    `insertions: List[SubitoListItem]`
+        The list of items that are new in the page.
 
     Example
     -------
@@ -261,6 +261,19 @@ class TransformedSubitoListPage:
     
     def __len__(self):
         return len(self.subito_list_page_items)
+    
+    @classmethod
+    def from_subito_list_page(cls, subito_list_page: SubitoListPage):
+        '''
+        # Transformed Subito List Page > From Subito List Page
+        Create a TransformedSubitoListPage object from a SubitoListPage object.
+
+        Arguments
+        ---------
+        `subito_list_page: SubitoListPage`
+            The SubitoListPage object to transform.
+        '''
+        return cls(ExtractedSubitoListPage(subito_list_page))
 
     @classmethod
     def from_url(cls, url: str):
