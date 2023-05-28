@@ -1,4 +1,4 @@
-from dubito.subito_list_page import SubitoListPage, ExtractedSubitoListPage, TransformedSubitoListPage, SubitoQueryListPage
+from dubito.subito_list_page import SubitoListPage, TransformedSubitoListPage, SubitoQueryListPage
 import pandas as pd
 
 def subito_list_page_item_iterator(list_page: SubitoListPage):
@@ -27,8 +27,7 @@ def subito_list_page_item_iterator(list_page: SubitoListPage):
     '''
     current_list_page = list_page
     while True:
-        extracted_list_page = ExtractedSubitoListPage(current_list_page)
-        transformed_list_page = TransformedSubitoListPage(extracted_list_page)
+        transformed_list_page = TransformedSubitoListPage.from_subito_list_page(current_list_page)
         if not len(transformed_list_page):
             break
         for subito_list_page_item in transformed_list_page:
@@ -100,23 +99,3 @@ def subito_list_page_item_list_from_url(url: str) -> list[dict]:
         The list of insertions.
     '''
     return list(subito_list_page_item_iterator_from_url(url))
-
-def subito_list_page_item_dataframe_from_query(query: str) -> pd.DataFrame:
-    '''
-    # Get Transformed Subito List Page Item Dataframe From Query
-    Gets a collection of insertions from a query withouth duplicates.
-
-    Arguments
-    ---------
-    `query: str`
-        The query to search.
-
-    Returns
-    -------
-    `pd.DataFrame`
-        The dataframe of insertions.
-    '''
-    df = pd.DataFrame(subito_list_page_item_list_from_query(query))
-    df.set_index("identifier", inplace=True)
-    df = df[~df.index.duplicated(keep='first')]
-    return df
