@@ -1,9 +1,10 @@
+from typing import Any
 import requests_cache
 from datetime import timedelta
 import logging
 import argparse
-from dubito.subito_list_page.iterators import subito_list_page_item_dataframe_from_query
-import pandas as pd
+from dubito.subito_list_page.iterators import subito_list_page_item_list_from_query
+import csv
 
 def main():
     parser = argparse.ArgumentParser(
@@ -19,6 +20,7 @@ def main():
     parser.add_argument('--maximum-price', type=int, help='The maximum price.')
     parser.add_argument('--install-cache', action='store_true', help='Install the cache.', default=False)
     parser.add_argument('-v', '--verbose', action='store_true', help='Verbose.', default=False)
+    parser.add_argument('-o', '--output', type=str, help='The output file.', default="csv")
     args = parser.parse_args()
 
     query = args.query
@@ -34,44 +36,34 @@ def main():
 
     if install_cache:
         logging.info("Installing cache")
-        requests_cache.install_cache('subito_cache', backend="sqlite", expire_after=timedelta(hours=1))
-    insertions = subito_list_page_item_dataframe_from_query(query)
+        requests_cache.install_cache('dubito_cache', backend="sqlite", expire_after=timedelta(hours=1))
 
-    if minimum_price:
-        insertions = insertions[insertions["price"] >= minimum_price]
-    if maximum_price:
-        insertions = insertions[insertions["price"] <= maximum_price]
+    insertions = subito_list_page_item_list_from_query(query)
 
-    q = None
-    for k in include:
-        if q is None:
-            q = insertions["title"].str.contains(k, case=False)
-        else:
-            q |= insertions["title"].str.contains(k, case=False)
-    if q is not None:
-        insertions = insertions[q]
+    # if minimum_price:
+    #     insertions = insertions[insertions["price"] >= minimum_price]
+    # if maximum_price:
+    #     insertions = insertions[insertions["price"] <= maximum_price]
 
-    for k in exclude:
-        insertions = insertions[~insertions["title"].str.contains(k, case=False)]
+    # q = None
+    # for k in include:
+    #     if q is None:
+    #         q = insertions["title"].str.contains(k, case=False)
+    #     else:
+    #         q |= insertions["title"].str.contains(k, case=False)
+    # if q is not None:
+    #     insertions = insertions[q]
 
-    insertions.dropna(subset=["price"], inplace=True)
+    # for k in exclude:
+    #     insertions = insertions[~insertions["title"].str.contains(k, case=False)]
 
-    q1 = insertions['price'].quantile(0.25)
-    q3 = insertions['price'].quantile(0.75)
-    iqr = q3 - q1
-    r = 1.5
-    insertions = insertions[~((insertions['price'] < (q1 - r * iqr)) | (insertions['price'] > (q3 + r * iqr)))]
+    # insertions.dropna(subset=["price"], inplace=True)
 
-    print(insertions.to_csv())
-
-    # sns.displot(insertions, kde=True, x="price", hue="sold", multiple="stack", palette="tab10")
-
-    # plt.title(f"{query} price distribution")
-    # plt.show()
-
-    # insertions[["price", "thumbnail"]].sort_values(by="price").to_csv("insertions.csv", index_label="identifier")
+    # q1 = insertions['price'].quantile(0.25)
+    # q3 = insertions['price'].quantile(0.75)
+    # iqr = q3 - q1
+    # r = 1.5
+    # insertions = insertions[~((insertions['price'] < (q1 - r * iqr)) | (insertions['price'] > (q3 + r * iqr)))]
 
 if __name__ == "__main__":
     main()
-
-
