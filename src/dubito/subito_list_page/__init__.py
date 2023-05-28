@@ -17,15 +17,6 @@ class SubitoListPage:
     page_number : int
         The page number of the page.
 
-    Methods
-    -------
-    __iter__()
-        Returns an iterator over the pages.
-    __getitem__(page_number)
-        Returns the page with the given page number.
-    __str__()
-        Returns a string representation of the page.
-
     Raises
     ------
     ValueError
