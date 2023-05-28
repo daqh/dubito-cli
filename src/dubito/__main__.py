@@ -3,10 +3,12 @@ import requests_cache
 from datetime import timedelta
 import logging
 import argparse
-from dubito.subito_list_page.iterators import subito_list_page_item_list_from_query
+from dubito.subito_list_page import subito_list_page_item_iterator, SubitoListPageQuery
 import csv
+import sys
 
 def main():
+
     parser = argparse.ArgumentParser(
         prog='dubito',
         description='Get the insertions from a query.',
@@ -14,20 +16,20 @@ def main():
     )
 
     parser.add_argument('query', type=str, help='The query to search.')
-    parser.add_argument('-i', '--include', type=str, nargs="+", help='The query to search.', default=[])
-    parser.add_argument('-e', '--exclude', type=str, nargs="+", help='The query to search.', default=[])
-    parser.add_argument('--minimum-price', type=int, help='The minimum price.', default=0)
-    parser.add_argument('--maximum-price', type=int, help='The maximum price.')
+    # parser.add_argument('-i', '--include', type=str, nargs="+", help='The query to search.', default=[])
+    # parser.add_argument('-e', '--exclude', type=str, nargs="+", help='The query to search.', default=[])
+    # parser.add_argument('--minimum-price', type=int, help='The minimum price.', default=0)
+    # parser.add_argument('--maximum-price', type=int, help='The maximum price.')
     parser.add_argument('--install-cache', action='store_true', help='Install the cache.', default=False)
     parser.add_argument('-v', '--verbose', action='store_true', help='Verbose.', default=False)
-    parser.add_argument('-o', '--output', type=str, help='The output file.', default="csv")
+    # parser.add_argument('-o', '--output', type=str, help='The output file.', default="csv")
     args = parser.parse_args()
 
     query = args.query
-    include = args.include
-    exclude = args.exclude
-    minimum_price = args.minimum_price
-    maximum_price = args.maximum_price
+    # include = args.include
+    # exclude = args.exclude
+    # minimum_price = args.minimum_price
+    # maximum_price = args.maximum_price
     install_cache = args.install_cache
     verbose = args.verbose
 
@@ -38,7 +40,9 @@ def main():
         logging.info("Installing cache")
         requests_cache.install_cache('dubito_cache', backend="sqlite", expire_after=timedelta(hours=1))
 
-    insertions = subito_list_page_item_list_from_query(query)
+    # insertions = subito_list_page_item_list_from_query(query)
+
+    subito_list_page_items = list(subito_list_page_item_iterator(SubitoListPageQuery(query)))
 
     # if minimum_price:
     #     insertions = insertions[insertions["price"] >= minimum_price]
@@ -64,6 +68,17 @@ def main():
     # iqr = q3 - q1
     # r = 1.5
     # insertions = insertions[~((insertions['price'] < (q1 - r * iqr)) | (insertions['price'] > (q3 + r * iqr)))]
+
+    # Covert to csv using csv module and print to console
+    # Don't use pandas to_csv method
+    # print(insertions.to_csv(index=False))
+
+    # insertions.to_csv("output.csv", index=False)
+
+    writer = csv.writer(sys.stdout, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    # writer.writerow()
+    for item in subito_list_page_items:
+        writer.writerow(item.values())
 
 if __name__ == "__main__":
     main()
