@@ -14,7 +14,7 @@ def main():
         epilog='Enjoy the program! :)',
     )
 
-    query_or_url_group = parser.add_mutually_exclusive_group()
+    query_or_url_group = parser.add_mutually_exclusive_group(required=True)
     query_or_url_group.add_argument('-q', '--query', type=str, help='The query to search.')
     query_or_url_group.add_argument('--url', type=str, help='The url to search.')
     parser.add_argument('-i', '--include', type=str, nargs="+", help='Exclude keywords from the query to search.', default=[])
@@ -46,12 +46,10 @@ def main():
 
     if query:
         subito_list_page_items = list(subito_list_page_item_iterator(SubitoListPageQuery(query)))
-    elif url:
+    else:
         if not validators.url(url):
             raise Exception(f'"{url}" is not a valid url, You must specify a valid url.')
         subito_list_page_items = list(subito_list_page_item_iterator(SubitoListPage(url)))
-    else:
-        raise Exception('You must specify a query or an url.')
 
     df = pd.DataFrame(subito_list_page_items).set_index("identifier")
     df = df[~df.index.duplicated(keep='first')]
