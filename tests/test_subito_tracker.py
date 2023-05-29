@@ -47,3 +47,19 @@ class TestSubitoListPageQuery(unittest.TestCase):
         self.assertEqual(list_page.query, "gtx 1070", "The query is not the same")
         self.assertEqual(list_page.page_number, 2, "The page number is not the same")
         self.assertEqual(list_page.url, "https://www.subito.it/annunci-italia/vendita/informatica/?q=gtx%201070&o=2", "The url is not the same")
+
+class TestExtractedSubitoListPage(unittest.TestCase):
+
+    def test_extracted_subito_list_page_without_page_number(self):
+        list_page = subito_list_page.SubitoListPageQuery("gtx 1070")
+        list_page = subito_list_page.extract(list_page)
+        self.assertEqual(list_page.url, "https://www.subito.it/annunci-italia/vendita/usato/?q=gtx%201070&o=1", "The url is not the same")
+        self.assertEqual(list_page.page_number, 1, "The page number is not the same")
+        self.assertEqual(list_page.query, "gtx 1070", "The query is not the same")
+
+    def test_extracted_subito_list_page_with_page_number(self):
+        list_page = subito_list_page.SubitoListPageQuery("gtx 1070", 2)
+        list_page = subito_list_page.extract(list_page)
+        self.assertEqual(list_page.url, "https://www.subito.it/annunci-italia/vendita/usato/?q=gtx%201070&o=2", "The url is not the same")
+        self.assertEqual(list_page.page_number, 2, "The page number is not the same")
+        self.assertEqual(list_page.query, "gtx 1070", "The query is not the same")

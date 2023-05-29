@@ -34,9 +34,9 @@ for item in subito_list_page_item_iterator(SubitoListPageQuery("nintendo switch"
 The iterator will stop when finds a page with no items.
 
 ```python
-from dubito.subito_list_page import extract_and_transform_subito_list_page, SubitoListPage
+from dubito. import subito_list_page
 
-for list_page in extract_and_transform_subito_list_page(SubitoListPage("https://www.subito.it/annunci-italia/vendita/usato/?q=nintendo%20switch")):
+for list_page in subito_list_page.extract(subito_list_page.SubitoListPage("https://www.subito.it/annunci-italia/vendita/usato/?q=nintendo%20switch")):
     print(len(list_page.subito_list_page_items), list_page.page_number)
 ```
 
