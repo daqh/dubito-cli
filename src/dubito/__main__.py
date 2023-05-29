@@ -49,7 +49,7 @@ def main():
     else:
         if not validators.url(url):
             raise Exception(f'"{url}" is not a valid url, You must specify a valid url.')
-        subito_list_page_items = list(subito_list_page.subito_list_page_item_iterator(subito_list_page.SubitoListPage(url)))
+        subito_list_page_items = list(subito_list_page_item_iterator(subito_list_page.SubitoListPage(url)))
 
     df = pd.DataFrame(subito_list_page_items).set_index("identifier")
     df = df[~df.index.duplicated(keep='first')]
