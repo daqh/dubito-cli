@@ -2,9 +2,9 @@ import requests_cache
 from datetime import timedelta
 import logging
 import argparse
-from dubito import subito_list_page
 import pandas as pd
 import validators
+from dubito.subito_list_page import SubitoListPageQuery, subito_list_page_item_iterator
 
 def main():
 
@@ -45,7 +45,7 @@ def main():
         requests_cache.install_cache('dubito_cache', backend="sqlite", expire_after=timedelta(hours=1))
 
     if query:
-        subito_list_page_items = list(subito_list_page.subito_list_page_item_iterator(subito_list_page.SubitoListPageQuery(query)))
+        subito_list_page_items = list(subito_list_page_item_iterator(SubitoListPageQuery(query)))
     else:
         if not validators.url(url):
             raise Exception(f'"{url}" is not a valid url, You must specify a valid url.')
