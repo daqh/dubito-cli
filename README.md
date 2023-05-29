@@ -18,7 +18,7 @@ This will download and transform the first page of the query `gtx 1070` and save
 
 `dubito -q "gtx 1070" --install-cache  -i 1070 -e pc i7 ryzen --minimum-price 90 --remove-outliers -o json > out.json`
 
-## Iterate over the items every list page of a query
+## Iterate over the items of every list page of a query
 
 If you want to iterate over the items of every list page of a query you can use the `subito_list_page_item_iterator` function. This function takes a `SubitoListPage` object as input and returns a generator that yields the items of every list page of the query. The iterator will stop when finds a page with no items.
 
@@ -29,7 +29,7 @@ for item in subito_list_page_item_iterator(SubitoListPageQuery("nintendo switch"
     print(item["title"], item["price"])
 ```
 
-## Iterate over list pages of a query
+## Iterate over list pages
 
 The iterator will stop when finds a page with no items.
 
@@ -37,6 +37,6 @@ The iterator will stop when finds a page with no items.
 from dubito.subito_list_page import extract_and_transform_subito_list_page, SubitoListPage
 
 for list_page in extract_and_transform_subito_list_page(SubitoListPage("https://www.subito.it/annunci-italia/vendita/usato/?q=nintendo%20switch")):
-    print(len(list_page.subito_list_page_items))
+    print(len(list_page.subito_list_page_items), list_page.page_number)
 ```
 
