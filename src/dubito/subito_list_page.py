@@ -24,7 +24,7 @@ class SubitoListPage:
         If the page number is less than 1.
     '''
 
-    def __init__(self, url) -> None:
+    def __init__(self, url: str) -> None:
         '''Initializes the page.
         
         Parameters
