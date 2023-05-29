@@ -106,9 +106,9 @@ class SubitoListPageQuery(SubitoListPage):
         If the url does not contain a query.
     '''
 
-    __url = "https://www.subito.it/annunci-italia/vendita/usato/?q={query}&o={page_number}"
+    __url = "https://www.subito.it/annunci-italia/vendita/{category}/?q={query}&o={page_number}"
 
-    def __init__(self, query: str, page_number: int = 1) -> None:
+    def __init__(self, query: str, page_number: int = 1, category: str = "usato") -> None:
         '''Initializes the page.
 
         Parameters
@@ -124,7 +124,7 @@ class SubitoListPageQuery(SubitoListPage):
             If the page number is less than 1.
             If the url does not contain a query.
         '''
-        url = self.__url.format(query=query, page_number=page_number)
+        url = self.__url.format(category=category, query=query, page_number=page_number)
         super().__init__(url)
 
 class ExtractedSubitoListPage(SubitoListPage):
