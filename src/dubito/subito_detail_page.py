@@ -106,7 +106,7 @@ def extract_subito_detail_page(subito_detail_page: SubitoDetailPage) -> Extracte
     response_text = simplified_get(subito_detail_page.url)
     return ExtractedSubitoDetailPage(subito_detail_page, response_text)
 
-__subito_detail_page_extractor = Extractor.from_yaml_file(f"{extractors_directory}/subito_detail_page.yml")
+__subito_detail_page_extractor = Extractor.from_yaml_file(f"{extractors_directory}/subito_detail_page_extractor.yaml")
 
 def transform_subito_detail_page(extracted_subito_detail_page: ExtractedSubitoDetailPage) -> TransformedSubitoDetailPage:
     '''Transforms an extracted Subito detail page.
