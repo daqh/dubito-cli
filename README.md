@@ -37,6 +37,6 @@ The iterator will stop when finds a page with no items.
 from dubito.subito_list_page import extract_and_transform_subito_list_page, SubitoListPage
 
 for list_page in extract_and_transform_subito_list_page(SubitoListPage("https://www.subito.it/annunci-italia/vendita/usato/?q=nintendo%20switch")):
-    print(len(list_page.items))
+    print(len(list_page.subito_list_page_items))
 ```
 
