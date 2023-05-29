@@ -10,9 +10,9 @@ To install the package you can use pip:
 
 ## Example usage of the CLI
 
-This will download and transform the first page of the query `gtx 1070` and save the data in a CSV file.
+This will download and transform the first page of the query `iphone 12 mini` and save the data in a CSV file.
 
-`dubito --query "gtx 1070" --install-cache  -i 1070 -e pc i7 ryzen --minimum-price 90 --remove-outliers > out.csv`
+`dubito -q "iphone 12 mini" --install-cache -i "iphone 12 mini" -v -e cover > out.csv`
 
 This will download and transform the first page of the query `gtx 1070` and save the data in a JSON file.
 
