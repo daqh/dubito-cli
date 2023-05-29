@@ -16,6 +16,7 @@ dependencies = [
     "requests",
     "requests-cache == 1.0.1",
     "pandas == 2.0.1",
+    "validators == 0.20.0",
 ]
 requires-python = ">=3.7"
 
