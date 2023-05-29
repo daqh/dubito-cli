@@ -1,6 +1,6 @@
 from selectorlib import Extractor
 from dubito.utils import simplified_get, extractors_directory
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, quote
 from datetime import datetime
 from typing import Iterator
 import logging
@@ -125,6 +125,7 @@ class SubitoListPageQuery(SubitoListPage):
             If the url does not contain a query.
         '''
         url = self.__url.format(category=category, query=query, page_number=page_number)
+        url = quote(url, safe=":/?=&")
         super().__init__(url)
 
 class ExtractedSubitoListPage(SubitoListPage):
