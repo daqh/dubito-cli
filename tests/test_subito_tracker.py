@@ -1,6 +1,7 @@
 import unittest
 from unittest import mock
-from dubito import subito_detail_page, subito_list_page
+from dubito import subito_detail_page
+from dubito import subito_list_page
 
 test_subito_list_page = open("tests/data/test_subito_list_page.html", "r").read()
 
