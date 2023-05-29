@@ -2,8 +2,9 @@ import requests_cache
 from datetime import timedelta
 import logging
 import argparse
-from dubito.subito_list_page import subito_list_page_item_iterator, SubitoListPageQuery
+from dubito.subito_list_page import subito_list_page_item_iterator, SubitoListPageQuery, SubitoListPage
 import pandas as pd
+import validators
 
 def main():
 
@@ -13,7 +14,9 @@ def main():
         epilog='Enjoy the program! :)',
     )
 
-    parser.add_argument('query', type=str, help='The query to search.')
+    query_or_url_group = parser.add_mutually_exclusive_group()
+    query_or_url_group.add_argument('-q', '--query', type=str, help='The query to search.')
+    query_or_url_group.add_argument('--url', type=str, help='The url to search.')
     parser.add_argument('-i', '--include', type=str, nargs="+", help='Exclude keywords from the query to search.', default=[])
     parser.add_argument('-e', '--exclude', type=str, nargs="+", help='Include keywords from the query to search.', default=[])
     parser.add_argument('--minimum-price', type=int, help='The minimum price.')
@@ -25,6 +28,7 @@ def main():
     args = parser.parse_args()
 
     query = args.query
+    url = args.url
     include = args.include
     exclude = args.exclude
     minimum_price = args.minimum_price
@@ -40,7 +44,14 @@ def main():
         logging.info("Installing cache")
         requests_cache.install_cache('dubito_cache', backend="sqlite", expire_after=timedelta(hours=1))
 
-    subito_list_page_items = list(subito_list_page_item_iterator(SubitoListPageQuery(query)))
+    if query:
+        subito_list_page_items = list(subito_list_page_item_iterator(SubitoListPageQuery(query)))
+    elif url:
+        if not validators.url(url):
+            raise Exception(f'"{url}" is not a valid url, You must specify a valid url.')
+        subito_list_page_items = list(subito_list_page_item_iterator(SubitoListPage(url)))
+    else:
+        raise Exception('You must specify a query or an url.')
 
     df = pd.DataFrame(subito_list_page_items).set_index("identifier")
     df = df[~df.index.duplicated(keep='first')]
@@ -63,8 +74,6 @@ def main():
     for k in exclude:
         df = df[~df["title"].str.contains(k, case=False)]
 
-    # df.dropna(subset=["price"], inplace=True)
-
     if remove_outliers:
         q1 = df['price'].quantile(0.25)
         q3 = df['price'].quantile(0.75)
@@ -72,7 +81,7 @@ def main():
         r = 1.5
         df = df[~((df['price'] < (q1 - r * iqr)) | (df['price'] > (q3 + r * iqr)))]
 
-        df = df.sort_values(by=["price"])
+    df = df.sort_values(by=["price"])
 
     if args.output == "csv":
         print(df.to_csv())

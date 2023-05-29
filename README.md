@@ -12,9 +12,9 @@ To install the package you can use pip:
 
 This will download the first page of the query `gtx 1070` and save the data in a CSV file.
 
-`dubito "gtx 1070" --install-cache  -i 1070 -e pc i7 ryzen --minimum-price 90 --remove-outliers > out.csv`
+`dubito --query "gtx 1070" --install-cache  -i 1070 -e pc i7 ryzen --minimum-price 90 --remove-outliers > out.csv`
 
 This will download the first page of the query `gtx 1070` and save the data in a JSON file.
 
-`dubito "gtx 1070" --install-cache  -i 1070 -e pc i7 ryzen --minimum-price 90 --remove-outliers -o json > out.json`
+`dubito -q "gtx 1070" --install-cache  -i 1070 -e pc i7 ryzen --minimum-price 90 --remove-outliers -o json > out.json`
 
