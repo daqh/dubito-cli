@@ -40,3 +40,8 @@ for list_page in SubitoListPage("https://www.subito.it/annunci-italia/vendita/us
     print(len(list_page.subito_list_page_items), list_page.page_number)
 ```
 
+# Run tests
+
+To run the tests you can use the following command:
+
+`python -m unittest`
