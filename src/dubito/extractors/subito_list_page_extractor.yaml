@@ -7,14 +7,14 @@ subito_list_page_items:
       css: 'h2'
       type: Text
     price:
-      css: '.price'
+      css: '.index-module_price__N7M2x'
       type: Text
     thumbnail:
       css: 'img'
       type: Attribute
       attribute: src
     url:
-      css: 'a.link'
+      css: 'a.SmallCard-module_link__hOkzY'
       type: Link
     city:
       css: '.index-module_container__noDE3 span:nth-of-type(1)'
