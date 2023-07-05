@@ -86,26 +86,6 @@ class SubitoListPage:
 
     def __str__(self) -> str:
         return f"({self.__class__.__name__}: {self.url})"
-    
-    def extract(self) -> 'ExtractedSubitoListPage':
-        '''Extracts the page.
-        
-        Returns
-        -------
-        ExtractedSubitoListPage
-            The extracted page.
-        '''
-        return extract(self)
-    
-    def extract_and_transform(self) -> 'TransformedSubitoListPage':
-        '''Extracts and transforms the page.
-        
-        Returns
-        -------
-        TransformedSubitoListPage
-            The transformed page.
-        '''
-        return extract_and_transform(self)
 
 class SubitoListPageQuery(SubitoListPage):
     '''A Subito list page with a query.
@@ -201,18 +181,8 @@ class ExtractedSubitoListPage(SubitoListPage):
     
     def __getitem__(self, page_number: int) -> SubitoListPage:
         subito_list_page = super().__getitem__(page_number)
-        extracted_subito_list_page = extract(subito_list_page)
+        extracted_subito_list_page = extract_subito_list_page(subito_list_page)
         return extracted_subito_list_page
-    
-    def transform(self) -> 'TransformedSubitoListPage':
-        '''Transforms the page.
-        
-        Returns
-        -------
-        TransformedSubitoListPage
-            The transformed page.
-        '''
-        return transform(self)
 
 class TransformedSubitoListPage(ExtractedSubitoListPage):
     '''A Subito list page with a transformer.
@@ -263,14 +233,14 @@ class TransformedSubitoListPage(ExtractedSubitoListPage):
     
     def __getitem__(self, page_number: int) -> SubitoListPage:
         subito_list_page = super().__getitem__(page_number)
-        extracted_subito_list_page = extract(subito_list_page)
+        extracted_subito_list_page = extract_subito_list_page(subito_list_page)
         try:
-            transformed_subito_list_page = transform(extracted_subito_list_page)
+            transformed_subito_list_page = transform_extracted_subito_list_page(extracted_subito_list_page)
         except ValueError:
             raise StopIteration
         return transformed_subito_list_page
 
-def extract(subito_list_page: SubitoListPage) -> ExtractedSubitoListPage:
+def extract_subito_list_page(subito_list_page: SubitoListPage) -> ExtractedSubitoListPage:
     '''Extracts a Subito list page.
     
     Parameters
@@ -292,7 +262,7 @@ def extract(subito_list_page: SubitoListPage) -> ExtractedSubitoListPage:
 
 __subito_list_page_extractor = Extractor.from_yaml_file(f'{extractors_directory}/subito_list_page_extractor.yaml')
 
-def transform(extracted_subito_list_page: ExtractedSubitoListPage) -> TransformedSubitoListPage:
+def transform_extracted_subito_list_page(extracted_subito_list_page: ExtractedSubitoListPage) -> TransformedSubitoListPage:
     '''Transforms an extracted Subito list page.
     
     Parameters
@@ -325,7 +295,7 @@ def transform(extracted_subito_list_page: ExtractedSubitoListPage) -> Transforme
             subito_list_page_item["price"] = None
     return TransformedSubitoListPage(extracted_subito_list_page, subito_list_page_items)
 
-def extract_and_transform(subito_list_page: SubitoListPage) -> TransformedSubitoListPage:
+def extract_and_transform_subito_list_page(subito_list_page: SubitoListPage) -> TransformedSubitoListPage:
     '''Extracts and transforms a Subito list page.
     
     Parameters
@@ -338,8 +308,8 @@ def extract_and_transform(subito_list_page: SubitoListPage) -> TransformedSubito
     TransformedSubitoListPage
         The transformed Subito list page.
     '''
-    extracted_subito_list_page = extract(subito_list_page)
-    return transform(extracted_subito_list_page)
+    extracted_subito_list_page = extract_subito_list_page(subito_list_page)
+    return transform_extracted_subito_list_page(extracted_subito_list_page)
 
 def subito_list_page_item_iterator(subito_list_page: SubitoListPage) -> Iterator[dict]:
     '''Iterates over the items of a Subito list page.
@@ -360,7 +330,7 @@ def subito_list_page_item_iterator(subito_list_page: SubitoListPage) -> Iterator
     >>> for subito_list_page_item in subito_list_page_item_iterator(subito_list_page):
     ...     print(subito_list_page_item)
     '''
-    for transformed_subito_list_page in extract_and_transform(subito_list_page):
+    for transformed_subito_list_page in extract_and_transform_subito_list_page(subito_list_page):
         for subito_list_page_item in transformed_subito_list_page.subito_list_page_items:
             yield subito_list_page_item
 
