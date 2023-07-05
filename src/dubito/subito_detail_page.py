@@ -36,16 +36,6 @@ class SubitoDetailPage:
     def __str__(self) -> str:
         return f"({self.__class__.__name__}: {self.identifier})"
     
-    def extract(self) -> 'ExtractedSubitoDetailPage':
-        '''Extracts the detail page.
-        
-        Returns
-        -------
-        ExtractedSubitoDetailPage
-            The extracted detail page.
-        '''
-        return extract(self)
-    
 class ExtractedSubitoDetailPage(SubitoDetailPage):
     '''Represents an extracted Subito detail page.
     
@@ -73,16 +63,6 @@ class ExtractedSubitoDetailPage(SubitoDetailPage):
     @property
     def response_text(self):
         return self.__response_text
-    
-    def transform(self) -> 'TransformedSubitoDetailPage':
-        '''Transforms the extracted detail page.
-        
-        Returns
-        -------
-        TransformedSubitoDetailPage
-            The transformed detail page.
-        '''
-        return transform(self)
 
 class TransformedSubitoDetailPage(ExtractedSubitoDetailPage):
     '''Represents a transformed Subito detail page.
@@ -114,7 +94,7 @@ class TransformedSubitoDetailPage(ExtractedSubitoDetailPage):
     def subito_detail_page_item(self):
         return self.__subito_detail_page_item
 
-def extract(subito_detail_page: SubitoDetailPage) -> ExtractedSubitoDetailPage:
+def extract_subito_detail_page(subito_detail_page: SubitoDetailPage) -> ExtractedSubitoDetailPage:
     '''Extracts a Subito detail page.
     
     Parameters
@@ -128,7 +108,7 @@ def extract(subito_detail_page: SubitoDetailPage) -> ExtractedSubitoDetailPage:
 
 __subito_detail_page_extractor = Extractor.from_yaml_file(f"{extractors_directory}/subito_detail_page_extractor.yaml")
 
-def transform(extracted_subito_detail_page: ExtractedSubitoDetailPage) -> TransformedSubitoDetailPage:
+def transform_subito_detail_page(extracted_subito_detail_page: ExtractedSubitoDetailPage) -> TransformedSubitoDetailPage:
     '''Transforms an extracted Subito detail page.
     
     Parameters
@@ -147,7 +127,7 @@ def transform(extracted_subito_detail_page: ExtractedSubitoDetailPage) -> Transf
     del subito_detail_page_item["location"]
     return TransformedSubitoDetailPage(extracted_subito_detail_page, subito_detail_page_item)
 
-def extract_and_transform(subito_detail_page: SubitoDetailPage) -> TransformedSubitoDetailPage:
+def extract_and_transform_subito_detail_page(subito_detail_page: SubitoDetailPage) -> TransformedSubitoDetailPage:
     '''Extracts and transforms a Subito detail page.
     
     Parameters
@@ -155,6 +135,6 @@ def extract_and_transform(subito_detail_page: SubitoDetailPage) -> TransformedSu
     subito_detail_page : SubitoDetailPage
         The Subito detail page.
     '''
-    extracted_subito_detail_page = extract(subito_detail_page)
-    transformed_subito_detail_page = transform(extracted_subito_detail_page)
+    extracted_subito_detail_page = extract_subito_detail_page(subito_detail_page)
+    transformed_subito_detail_page = transform_subito_detail_page(extracted_subito_detail_page)
     return transformed_subito_detail_page
