@@ -10,7 +10,7 @@ def main():
 
     parser = argparse.ArgumentParser(
         prog='dubito',
-        description='Get the insertions from a query.',
+        description='Get Subito insertions from a query or a url.',
         epilog='Enjoy the program! :)',
     )
 
@@ -84,7 +84,7 @@ def main():
     if args.output == "csv":
         print(df.to_csv())
     elif args.output == "json":
-        print(df.transpose().to_json())
+        print(df.transpose().to_json(indent=4))
     else:
         raise Exception("Invalid output format")
 
