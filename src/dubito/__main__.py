@@ -51,15 +51,20 @@ def main():
             raise Exception(f'"{url}" is not a valid url, You must specify a valid url.')
         subito_list_page_items = list(subito_list_page_item_iterator(SubitoListPage(url)))
 
-    df = pd.DataFrame(subito_list_page_items).set_index("identifier")
+    # Convert the downloaded items to a pandas dataframe and applies some filters
+
+    df = pd.DataFrame(subito_list_page_items, index="identifier")
     df = df[~df.index.duplicated(keep='first')]
 
+    # Filer 1: Get everything under the specified price
     if minimum_price is not None:
         df = df[df["price"] >= minimum_price]
 
+    # Filer 2: Get everything over the specified price
     if maximum_price is not None:
         df = df[df["price"] <= maximum_price]
 
+    # Filer 3: Get everything that contains the specified keywords
     q = None
     for k in include:
         if q is None:
@@ -69,9 +74,11 @@ def main():
     if q is not None:
         df = df[q]
 
+    # Filer 4: Get everything that does not contain the specified keywords
     for k in exclude:
         df = df[~df["title"].str.contains(k, case=False)]
 
+    # Filer 5: Remove outliers
     if remove_outliers:
         q1 = df['price'].quantile(0.25)
         q3 = df['price'].quantile(0.75)
@@ -79,6 +86,7 @@ def main():
         r = 1.5
         df = df[~((df['price'] < (q1 - r * iqr)) | (df['price'] > (q3 + r * iqr)))]
 
+    # Finally, sort by price
     df = df.sort_values(by=["price"])
 
     if args.output == "csv":
