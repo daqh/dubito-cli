@@ -4,12 +4,11 @@ import logging
 import argparse
 import pandas as pd
 import validators
-from dubito.subito_list_page import SubitoListPage, SubitoListPageQuery, subito_list_page_item_iterator, extract_and_transform_subito_list_page
+from dubito.subito_list_page import SubitoListPage, SubitoListPageQuery, subito_list_page_item_iterator
 from rich.logging import RichHandler
 from rich.console import Console
 
 def main():
-
 
     parser = argparse.ArgumentParser(
         prog='dubito',
