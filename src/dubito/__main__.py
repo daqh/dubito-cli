@@ -53,7 +53,7 @@ def main():
 
     # Convert the downloaded items to a pandas dataframe and applies some filters
 
-    df = pd.DataFrame(subito_list_page_items, index="identifier")
+    df = pd.DataFrame(subito_list_page_items).set_index("identifier")
     df = df[~df.index.duplicated(keep='first')]
 
     # Filer 1: Get everything under the specified price
