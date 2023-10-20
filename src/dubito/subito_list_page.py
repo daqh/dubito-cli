@@ -253,7 +253,7 @@ def extract_subito_list_page(subito_list_page: SubitoListPage) -> ExtractedSubit
     ExtractedSubitoListPage
         The extracted Subito list page.
     '''
-    logging.info(f'Extracting Subito list page {subito_list_page.url}')
+    logging.info(f'[bold yellow blink]Extracting[/bold yellow blink] Subito list page {subito_list_page.url}')
     try:
         response_text = simplified_get(subito_list_page.url)
     except Exception as e:
@@ -275,7 +275,7 @@ def transform_extracted_subito_list_page(extracted_subito_list_page: ExtractedSu
     TransformedSubitoListPage
         The transformed Subito list page.
     '''
-    logging.info(f'Transforming extracted Subito list page {extracted_subito_list_page.url}')
+    logging.info(f'[bold green blink]Transforming[/bold green blink] extracted Subito list page {extracted_subito_list_page.url}')
     response_text = extracted_subito_list_page.response_text
     result = __subito_list_page_extractor.extract(response_text)
     subito_list_page_items = result["subito_list_page_items"]
@@ -330,7 +330,10 @@ def subito_list_page_item_iterator(subito_list_page: SubitoListPage) -> Iterator
     >>> for subito_list_page_item in subito_list_page_item_iterator(subito_list_page):
     ...     print(subito_list_page_item)
     '''
-    for transformed_subito_list_page in extract_and_transform_subito_list_page(subito_list_page):
-        for subito_list_page_item in transformed_subito_list_page.subito_list_page_items:
-            yield subito_list_page_item
-
+    for subito_list_page_item in subito_list_page:
+        try:
+            transformed_subito_list_page = extract_and_transform_subito_list_page(subito_list_page_item)
+        except ValueError:  # If the subito list page is empty
+            break           # Stop iterating
+        for transformed_subito_list_page_item in transformed_subito_list_page.subito_list_page_items:
+            yield transformed_subito_list_page_item

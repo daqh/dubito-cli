@@ -4,9 +4,12 @@ import logging
 import argparse
 import pandas as pd
 import validators
-from dubito.subito_list_page import SubitoListPage, SubitoListPageQuery, subito_list_page_item_iterator
+from dubito.subito_list_page import SubitoListPage, SubitoListPageQuery, subito_list_page_item_iterator, extract_and_transform_subito_list_page
+from rich.logging import RichHandler
+from rich.console import Console
 
 def main():
+
 
     parser = argparse.ArgumentParser(
         prog='dubito',
@@ -38,7 +41,13 @@ def main():
     remove_outliers = args.remove_outliers
 
     if verbose:
-        logging.basicConfig(level=logging.INFO)
+        import sys
+        console = Console(file=sys.stderr)
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(message)s",
+            handlers=[RichHandler(console=console, markup=True)],
+        )
 
     if install_cache:
         logging.info("Installing cache")
