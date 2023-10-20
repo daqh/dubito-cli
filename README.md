@@ -44,6 +44,17 @@ for list_page in SubitoListPage("https://www.subito.it/annunci-italia/vendita/us
     print(len(list_page.subito_list_page_items), list_page.page_number)
 ```
 
+# Get a dataframe of list page items
+
+```python
+import pandas as pd
+
+subito_list_page_items = subito_list_page_item_iterator(SubitoListPageQuery(query))
+subito_list_page_items = list(subito_list_page_items)
+subito_list_page_items = pd.DataFrame(subito_list_page_items).set_index("identifier")
+```
+
+
 # Run tests
 
 To run the tests you can use the following command:
