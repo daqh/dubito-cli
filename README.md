@@ -14,6 +14,43 @@ To install the package you can use pip:
 
 ## Example usage of the CLI
 
+Running the command:
+
+```bash
+dubito --help
+```
+
+The result will be:
+
+```bash
+usage: dubito [-h] (-q QUERY | --url URL) [-i INCLUDE [INCLUDE ...]] [-e EXCLUDE [EXCLUDE ...]] [--minimum-price MINIMUM_PRICE] [--maximum-price MAXIMUM_PRICE] [--install-cache] [-v] [-o OUTPUT] [--remove-outliers]
+
+Get Subito insertions from a query or a url.
+
+options:
+  -h, --help            show this help message and exit
+  -q QUERY, --query QUERY
+                        The query to search.
+  --url URL             The url to search.
+  -i INCLUDE [INCLUDE ...], --include INCLUDE [INCLUDE ...]
+                        Exclude keywords from the query to search.
+  -e EXCLUDE [EXCLUDE ...], --exclude EXCLUDE [EXCLUDE ...]
+                        Include keywords from the query to search.
+  --minimum-price MINIMUM_PRICE
+                        The minimum price.
+  --maximum-price MAXIMUM_PRICE
+                        The maximum price.
+  --install-cache       Install the cache.
+  -v, --verbose         Verbose.
+  -o OUTPUT, --output OUTPUT
+                        The output file.
+  --remove-outliers     Remove outliers.
+
+Enjoy the program! :)
+```
+
+---
+
 This will download and transform the first page of the query `iphone 12 mini` and save the data in a CSV file.
 
 `dubito -q "iphone 12 mini" --install-cache -i "iphone 12 mini" -v -e cover > out.csv`
