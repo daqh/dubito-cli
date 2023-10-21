@@ -51,9 +51,26 @@ Enjoy the program! :)
 
 ---
 
+# Data visualization
+
 This will download and transform the first page of the query `iphone 12 mini` and save the data in a CSV file.
 
 `dubito -q "iphone 12 mini" --install-cache -i "iphone 12 mini" -v -e cover > out.csv`
+
+```python
+import pandas as pd
+import seaborn as sns
+
+df = pd.readcsv("out.csv")
+
+sns.displot(df, x="price", kde=True)
+```
+
+![Dubito - iPhone 12 mini - price distribution](assets/dubito-iphone_12-price_distribution.png "Dubito - iPhone 12 mini - price distribution")
+
+the visualization of the price distribution facilitates the identification of the best selling and purchasing price for a specific good.
+
+---
 
 This will download and transform the first page of the query `gtx 1070` and save the data in a JSON file.
 
@@ -90,7 +107,6 @@ subito_list_page_items = subito_list_page_item_iterator(SubitoListPageQuery(quer
 subito_list_page_items = list(subito_list_page_items)
 subito_list_page_items = pd.DataFrame(subito_list_page_items).set_index("identifier")
 ```
-
 
 # Run tests
 
