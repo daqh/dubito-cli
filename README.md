@@ -113,3 +113,15 @@ subito_list_page_items = pd.DataFrame(subito_list_page_items).set_index("identif
 To run the tests you can use the following command:
 
 `python -m unittest`
+
+# Very nice, but...
+
+Unfortunately, the use of this tool is not recommended, in fact, on the general conditions of the service page of Subito.it, in section 5, it is explicitly mentioned that:
+
+- **IT**: <cite>
+L'utente, inoltre, si assume ogni responsabilità per eventuali danni che possano derivare al suo sistema informatico dall'uso del Servizio o a quello di terzi. Resta infine inteso che ogni eventuale utilizzo di robot, spider, scraper e/o ulteriori  strumenti automatici per accedere al sito e/o per estrapolare i relativi dati, contenuti, informazioni è espressamente vietato.
+</cite>
+
+- **EN**: <cite>
+Furthermore, the user assumes all responsibility for any damage that may arise to his computer system from the use of the Service or to that of third parties. Finally, it is understood that any use of robots, spiders, scrapers and/or other automatic tools to access the site and/or to extrapolate the related data, contents, information is expressly prohibited.
+</cite>
