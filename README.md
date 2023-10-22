@@ -23,7 +23,8 @@ dubito --help
 The result will be:
 
 ```bash
-usage: dubito [-h] (-q QUERY | --url URL) [-i INCLUDE [INCLUDE ...]] [-e EXCLUDE [EXCLUDE ...]] [--minimum-price MINIMUM_PRICE] [--maximum-price MAXIMUM_PRICE] [--install-cache] [-v] [-o OUTPUT] [--remove-outliers]
+usage: dubito [-h] (-q QUERY | --url URL) [-i INCLUDE [INCLUDE ...]] [-e EXCLUDE [EXCLUDE ...]] [--minimum-price MINIMUM_PRICE] [--maximum-price MAXIMUM_PRICE]
+              [--install-cache] [-v] [--remove-outliers]
 
 Get Subito insertions from a query or a url.
 
@@ -42,8 +43,6 @@ options:
                         The maximum price.
   --install-cache       Install the cache.
   -v, --verbose         Verbose.
-  -o OUTPUT, --output OUTPUT
-                        The output file.
   --remove-outliers     Remove outliers.
 
 Enjoy the program! :)
@@ -53,28 +52,15 @@ Enjoy the program! :)
 
 # Data visualization
 
-This will download and transform the first page of the query `iphone 12 mini` and save the data in a CSV file.
-
-`dubito -q "iphone 12 mini" --install-cache -i "iphone 12 mini" -v -e cover > out.csv`
-
-```python
-import pandas as pd
-import seaborn as sns
-
-df = pd.readcsv("out.csv")
-
-sns.displot(df, x="price", kde=True)
-```
-
 ![Dubito - iPhone 12 mini - price distribution](assets/dubito-iphone_12-price_distribution.png "Dubito - iPhone 12 mini - price distribution")
 
 the visualization of the price distribution facilitates the identification of the best selling and purchasing price for a specific good.
 
 ---
 
-This will download and transform the first page of the query `gtx 1070` and save the data in a JSON file.
+This will download and transform the first page of the query `gtx 1070` and save the data.
 
-`dubito -q "gtx 1070" --install-cache  -i 1070 -e pc i7 ryzen --minimum-price 90 --remove-outliers -o json > out.json`
+`dubito -q "gtx 1070" --install-cache  -i 1070 -e pc i7 ryzen --minimum-price 90 --remove-outliers`
 
 ## Iterate over the items of every list page of a query
 
