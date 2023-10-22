@@ -145,5 +145,7 @@ def main():
     plt.xlabel("Price")
     plt.savefig(f"{project_folder}/price_distribution.png")
 
+    df["price"].describe().to_csv(f"{project_folder}/statistics.csv")
+
 if __name__ == "__main__":
     main()
