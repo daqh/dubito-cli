@@ -16,17 +16,32 @@ To install the package you can use pip:
 
 Running the command:
 
-```bash
-dubito --help
-```
+`dubito --help`
 
 The result will be:
 
 ```bash
-usage: dubito [-h] (-q QUERY | --url URL) [-i INCLUDE [INCLUDE ...]] [-e EXCLUDE [EXCLUDE ...]] [--minimum-price MINIMUM_PRICE] [--maximum-price MAXIMUM_PRICE]
-              [--install-cache] [-v] [--remove-outliers]
+usage: dubito [-h] {query} ...
 
 Get Subito insertions from a query or a url.
+
+positional arguments:
+  {query}     sub-command help
+    query     Get Subito insertions from a query or a url.
+
+options:
+  -h, --help  show this help message and exit
+
+Enjoy the program! :)
+```
+
+Running the **query** command:
+
+`dubito query --help`
+
+```bash
+usage: dubito query [-h] (-q QUERY | --url URL) [-i INCLUDE [INCLUDE ...]] [-e EXCLUDE [EXCLUDE ...]] [--minimum-price MINIMUM_PRICE]
+                    [--maximum-price MAXIMUM_PRICE] [--install-cache] [-v] [--remove-outliers]
 
 options:
   -h, --help            show this help message and exit
@@ -44,13 +59,13 @@ options:
   --install-cache       Install the cache.
   -v, --verbose         Verbose.
   --remove-outliers     Remove outliers.
-
-Enjoy the program! :)
 ```
 
 ---
 
 # Data visualization
+
+The execution of the **query** command will produce a folder named *results* which contains the report for the executed query.
 
 ![Dubito - iPhone 12 mini - price distribution](assets/dubito-iphone_12-price_distribution.png "Dubito - iPhone 12 mini - price distribution")
 
@@ -60,7 +75,7 @@ the visualization of the price distribution facilitates the identification of th
 
 This will download and transform the first page of the query `gtx 1070` and save the data.
 
-`dubito -q "gtx 1070" --install-cache  -i 1070 -e pc i7 ryzen --minimum-price 90 --remove-outliers`
+`dubito query -q "gtx 1070" --install-cache  -i 1070 -e pc i7 ryzen --minimum-price 90 --remove-outliers`
 
 ## Iterate over the items of every list page of a query
 
