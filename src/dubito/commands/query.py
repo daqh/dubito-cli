@@ -10,7 +10,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-def query(query: str, url: str, include: list[str], exclude: list[str], minimum_price: float, maximum_price: float, install_cache: bool, verbose: bool, remove_outliers: bool):
+def query(query: str, url: str, include: list[str], exclude: list[str], minimum_price: float, maximum_price: float, install_cache: bool, verbose: bool, remove_outliers: bool) -> None:
 
     if verbose:
         logging.basicConfig(

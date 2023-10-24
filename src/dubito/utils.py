@@ -3,7 +3,7 @@ import pathlib
 
 extractors_directory = pathlib.Path(__file__).parent.absolute() / "extractors"
 
-def simplified_get(url):
+def simplified_get(url: str) -> str:
     '''
     #  Simplified Get
     Get the resulting html response from a specified url

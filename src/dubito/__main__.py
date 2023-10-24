@@ -1,7 +1,7 @@
 import argparse
 from dubito.commands import query
 
-def define_query_parser(query_parser: argparse.ArgumentParser):
+def define_query_parser(query_parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     query_or_url_group = query_parser.add_mutually_exclusive_group(required=True)
     query_or_url_group.add_argument('-q', '--query', type=str, help='The query to search.')
     query_or_url_group.add_argument('--url', type=str, help='The url to search.')
