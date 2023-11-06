@@ -3,12 +3,14 @@ from datetime import timedelta
 import logging
 import pandas as pd
 import validators
-from dubito.subito_list_page import SubitoListPage, SubitoListPageQuery, subito_list_page_item_iterator
+from dubito.subito_list_page import SubitoListPage, SubitoListPageQuery, subito_list_page_item_iterator, subito_list_page_items_dataframe
 from rich.logging import RichHandler
 from os import path, mkdir
 import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime
+from dubito.subito_list_page_filter import BaseSubitoListPageFilter
+from dubito.filters import MinimumPriceSubitoListPageFilter, MaximumPriceSubitoListPageFilter, TitleContainsIncludeSubitoLiistPageFilter, TitleContainsExcludeSubitoLiistPageFilter, RemoveOutliersSubitoListPageFilter
 
 def query(query: str, url: str, include: list[str], exclude: list[str], minimum_price: float, maximum_price: float, install_cache: bool, verbose: bool, remove_outliers: bool) -> None:
 
@@ -25,47 +27,38 @@ def query(query: str, url: str, include: list[str], exclude: list[str], minimum_
 
     if query:
         subito_list_page = SubitoListPageQuery(query)
-        subito_list_page_items = list(subito_list_page_item_iterator(subito_list_page))
     else:
         if not validators.url(url):
             raise Exception(f'"{url}" is not a valid url, You must specify a valid url.')
         subito_list_page = SubitoListPage(url)
-        subito_list_page_items = list(subito_list_page_item_iterator(subito_list_page))
 
     # Convert the downloaded items to a pandas dataframe and applies some filters
 
-    df = pd.DataFrame(subito_list_page_items).set_index("identifier")
-    df = df[~df.index.duplicated(keep='first')]
+    df = subito_list_page_items_dataframe(subito_list_page)
+
+    head_filter = BaseSubitoListPageFilter()
 
     # Filer 1: Get everything under the specified price
     if minimum_price is not None:
-        df = df[df["price"] >= minimum_price]
+        head_filter = MinimumPriceSubitoListPageFilter(minimum_price, head_filter)
 
     # Filer 2: Get everything over the specified price
     if maximum_price is not None:
-        df = df[df["price"] <= maximum_price]
-
+        head_filter = MaximumPriceSubitoListPageFilter(maximum_price, head_filter)
+    
     # Filer 3: Get everything that contains the specified keywords
-    q = None
-    for k in include:
-        if q is None:
-            q = df["title"].str.contains(k, case=False)
-        else:
-            q |= df["title"].str.contains(k, case=False)
-    if q is not None:
-        df = df[q]
+    if include:
+        head_filter = TitleContainsIncludeSubitoLiistPageFilter(include, head_filter)
 
     # Filer 4: Get everything that does not contain the specified keywords
-    for k in exclude:
-        df = df[~df["title"].str.contains(k, case=False)]
+    if exclude:
+        head_filter = TitleContainsExcludeSubitoLiistPageFilter(exclude, head_filter)
 
     # Filer 5: Remove outliers
     if remove_outliers:
-        q1 = df['price'].quantile(0.25)
-        q3 = df['price'].quantile(0.75)
-        iqr = q3 - q1
-        r = 1.5
-        df = df[~((df['price'] < (q1 - r * iqr)) | (df['price'] > (q3 + r * iqr)))]
+        head_filter = RemoveOutliersSubitoListPageFilter(next_filter=head_filter)
+
+    df = head_filter.handle(df)
 
     # Finally, sort by price
     df = df.sort_values(by=["price"])
