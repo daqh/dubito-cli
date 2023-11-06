@@ -1,9 +1,8 @@
 import requests_cache
 from datetime import timedelta
 import logging
-import pandas as pd
 import validators
-from dubito.subito_list_page import SubitoListPage, SubitoListPageQuery, subito_list_page_item_iterator, subito_list_page_items_dataframe
+from dubito.subito_list_page import SubitoListPage, SubitoListPageQuery, subito_list_page_items_dataframe
 from rich.logging import RichHandler
 from os import path, mkdir
 import seaborn as sns
@@ -75,6 +74,8 @@ def query(query: str, url: str, include: list[str], exclude: list[str], minimum_
 
     now = datetime.now()
 
+    # Building folders
+
     if not path.exists(f"{project_folder}/y{now.year}"):
         mkdir(f"{project_folder}/y{now.year}")
 
@@ -110,4 +111,3 @@ def query(query: str, url: str, include: list[str], exclude: list[str], minimum_
     plt.savefig(f"{project_folder}/price_distribution.png")
 
     df["price"].describe().to_csv(f"{project_folder}/statistics.csv")
-
