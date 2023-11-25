@@ -1,6 +1,6 @@
 ![Dubito Logo](assets/dubito_logo.png "Dubito")
 
-# Dubito
+# Dubito CLI
 
 Dubito is a Python package that allows you to track Subito insertions. It's a simple tool that allows you to track subito insertions by specifying a query and some filters. It's useful if you want to track a specific product or if you want to track a product in a specific region or any product for a specific query.
 

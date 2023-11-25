@@ -111,3 +111,8 @@ def query(query: str, url: str, include: list[str], exclude: list[str], minimum_
     plt.savefig(f"{project_folder}/price_distribution.png")
 
     df["price"].describe().to_csv(f"{project_folder}/statistics.csv")
+    
+    df.where(df["sold"] == True)["price"].describe().to_csv(f"{project_folder}/statistics_sold.csv")
+
+    df.where(df["sold"] == False)["price"].describe().to_csv(f"{project_folder}/statistics_unsold.csv")
+
