@@ -1,10 +1,30 @@
-from pony import orm
+from peewee import *
 
-db = orm.Database()
+db = SqliteDatabase('database.sqlite')
 
-class SubitoInsertion:
-
-    id = orm.PrimaryKey(int)
-    title = orm.Required(str)
-    url = orm.Required(str)
+class SubitoListPage(Model):
     
+        id = PrimaryKeyField()
+        url = CharField()
+        query = CharField(null=True)
+
+        class Meta:
+            database = db
+
+class SubitoInsertion(Model):
+
+    id = PrimaryKeyField()
+    title = CharField()
+    url = CharField()
+    thumbnail = CharField(null=True)
+    price = FloatField(null=True)
+    description = CharField(null=True)
+    city = CharField(null=True)
+    state = CharField(null=True)
+    subito_list_page = ForeignKeyField(SubitoListPage, backref='subito_insertions', on_delete='CASCADE')
+
+    class Meta:
+        database = db
+
+db.create_tables([SubitoInsertion, SubitoListPage])
+db.close()
