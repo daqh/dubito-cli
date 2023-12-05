@@ -38,17 +38,3 @@ def query(query: str, url: str, include: list[str], exclude: list[str], minimum_
     # Convert the downloaded items to a pandas dataframe and applies some filters
 
     df = subito_list_page_items_dataframe(subito_list_page)
-
-    x.save()
-    # Iterate over the dataframe rows
-    for index, row in df.iterrows():
-        subito_insertion = models.SubitoInsertion(
-            title=row['title'],
-            url=row['url'],
-            thumbnail=row['thumbnail'],
-            price=row['price'],
-            city=row['city'],
-            state=row['state'],
-            subito_list_page=x
-        )
-        subito_insertion.save()
