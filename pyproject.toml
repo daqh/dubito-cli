@@ -24,7 +24,6 @@ dependencies = [
     "rich == 13.6.0",
     "seaborn == 0.13.0",
     "matplotlib == 3.8.0",
-    "pony == 0.7.17",
 ]
 requires-python = ">=3.7"
 
