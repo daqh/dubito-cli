@@ -263,6 +263,8 @@ def extract_subito_list_page(subito_list_page: SubitoListPage) -> ExtractedSubit
 
 __subito_list_page_extractor = Extractor.from_yaml_file(f'{extractors_directory}/subito_list_page_extractor.yaml')
 
+from dubito.models import SubitoInsertion
+
 def transform_extracted_subito_list_page(extracted_subito_list_page: ExtractedSubitoListPage) -> TransformedSubitoListPage:
     '''Transforms an extracted Subito list page.
     
