@@ -6,6 +6,7 @@ from typing import Iterator
 import pandas as pd
 import logging
 
+# TODO: Convert into a model
 class SubitoListPage:
     '''A Subito list page.
     
@@ -284,6 +285,7 @@ def transform_extracted_subito_list_page(extracted_subito_list_page: ExtractedSu
     subito_list_page_items = result["subito_list_page_items"]
     if not subito_list_page_items:
         raise ValueError("The Subito List Page is empty.")
+    # TODO: Instantiate objects of type SubitoInsertion instead of dicts
     for subito_list_page_item in subito_list_page_items:
         subito_list_page_item["page"] = extracted_subito_list_page.page_number
         subito_list_page_item["timestamp"] = datetime.now()
