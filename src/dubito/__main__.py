@@ -14,22 +14,17 @@ def define_query_parser(query_parser: argparse.ArgumentParser) -> argparse.Argum
     query_parser.add_argument('--remove-outliers', action='store_true', help='Remove outliers.', default=False)
     return query_parser
 
+from subito_list_page import SubitoListPage
+
 def main():
-
-    parser = argparse.ArgumentParser(
-        prog='dubito',
-        description='Get Subito insertions from a query or a url.',
-        epilog='Enjoy the program! :)',
-    )
-
-    subparsers = parser.add_subparsers(help='sub-command help', dest='subparser_name', required=True)
-
-    query_parser = define_query_parser(subparsers.add_parser('query', help='Get Subito insertions from a query or a url.'))
-
-    args = parser.parse_args()
-
-    if args.subparser_name == 'query':
-        query(args.query, args.url, args.include, args.exclude, args.minimum_price, args.maximum_price, args.install_cache, args.verbose, args.remove_outliers)
+    subito_list_page = SubitoListPage(url="https://subito.it?q=macbzook")
+    print(subito_list_page)
+    subito_list_page.save()
+    print(subito_list_page)
+    subito_list_page = subito_list_page[2]
+    print(subito_list_page)
+    subito_list_page.save()
+    print(subito_list_page)
 
 if __name__ == "__main__":
     main()

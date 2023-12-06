@@ -6,8 +6,16 @@ from typing import Iterator
 import pandas as pd
 import logging
 
-# TODO: Convert into a model
-class SubitoListPage:
+from peewee import *
+
+db = SqliteDatabase('database.sqlite')
+
+class BaseModel(Model):
+
+    class Meta:
+        database = db
+
+class SubitoListPage(BaseModel):
     '''A Subito list page.
     
     Attributes
@@ -25,6 +33,9 @@ class SubitoListPage:
         If the url does not contain a query.
         If the page number is less than 1.
     '''
+
+    id = PrimaryKeyField()
+    url = CharField()
 
     def __init__(self, url: str) -> None:
         '''Initializes the page.
@@ -47,7 +58,8 @@ class SubitoListPage:
         >>> subito_list_page.url
         'https://www.subito.it/annunci-lazio/vendita/usato/?q=macbook+pro&o=1'
         '''
-        self.__url = url
+        super().__init__(url=url)
+        self.url = url
         parsed_url = urlparse(url)
         parsed_qs = parse_qs(parsed_url.query)
         try:
@@ -59,11 +71,6 @@ class SubitoListPage:
             raise ValueError("The page number must be greater than 0.")
         self.__page_number = int(page_number)
 
-    @property
-    def url(self) -> str:
-        '''The url of the page.'''
-        return self.__url
-    
     @property
     def query(self) -> str:
         '''The query of the page.'''
@@ -87,7 +94,7 @@ class SubitoListPage:
         return SubitoListPageQuery(self.query, page_number)
 
     def __str__(self) -> str:
-        return f"({self.__class__.__name__}: {self.url})"
+        return f"({self.id} {self.__class__.__name__}: {self.url})"
 
 class SubitoListPageQuery(SubitoListPage):
     '''A Subito list page with a query.
@@ -129,6 +136,8 @@ class SubitoListPageQuery(SubitoListPage):
         url = self.__url.format(category=category, query=query, page_number=page_number)
         url = quote(url, safe=":/?=&")
         super().__init__(url)
+
+db.create_tables([SubitoListPage, SubitoListPageQuery])
 
 class ExtractedSubitoListPage(SubitoListPage):
     '''A Subito list page with an extractor.
@@ -263,8 +272,6 @@ def extract_subito_list_page(subito_list_page: SubitoListPage) -> ExtractedSubit
     return ExtractedSubitoListPage(subito_list_page, response_text)
 
 __subito_list_page_extractor = Extractor.from_yaml_file(f'{extractors_directory}/subito_list_page_extractor.yaml')
-
-from dubito.models import SubitoInsertion
 
 def transform_extracted_subito_list_page(extracted_subito_list_page: ExtractedSubitoListPage) -> TransformedSubitoListPage:
     '''Transforms an extracted Subito list page.
