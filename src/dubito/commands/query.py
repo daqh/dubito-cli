@@ -11,8 +11,6 @@ from datetime import datetime
 from dubito.subito_list_page_filter import BaseSubitoListPageFilter
 from dubito.filters import MinimumPriceSubitoListPageFilter, MaximumPriceSubitoListPageFilter, TitleContainsIncludeSubitoLiistPageFilter, TitleContainsExcludeSubitoLiistPageFilter, RemoveOutliersSubitoListPageFilter
 
-from dubito import models
-
 def query(query: str, url: str, include: list[str], exclude: list[str], minimum_price: float, maximum_price: float, install_cache: bool, verbose: bool, remove_outliers: bool) -> None:
 
     if verbose:
@@ -33,22 +31,8 @@ def query(query: str, url: str, include: list[str], exclude: list[str], minimum_
             raise Exception(f'"{url}" is not a valid url, You must specify a valid url.')
         subito_list_page = SubitoListPage(url)
 
-    x = models.SubitoListPage(url=subito_list_page.url, query=subito_list_page.query)
-    x.save()
-
     # Convert the downloaded items to a pandas dataframe and applies some filters
 
     df = subito_list_page_items_dataframe(subito_list_page)
 
-    # Iterate over the dataframe rows
-    for index, row in df.iterrows():
-        subito_insertion = models.SubitoInsertion(
-            title=row['title'],
-            url=row['url'],
-            thumbnail=row['thumbnail'],
-            price=row['price'],
-            city=row['city'],
-            state=row['state'],
-            subito_list_page=x
-        )
-        subito_insertion.save()
+    
