@@ -76,10 +76,30 @@ def query(query: str, url: str, include: list[str], exclude: list[str], minimum_
 
     # Building folders
 
-    project_folder = f"{project_folder}/y{now.year}m{now.month}d{now.day}H{now.hour}M{now.minute}"
+    if not path.exists(f"{project_folder}/y{now.year}"):
+        mkdir(f"{project_folder}/y{now.year}")
 
-    if not path.exists(project_folder):
-        mkdir(project_folder)
+    project_folder = f"{project_folder}/y{now.year}"
+
+    if not path.exists(f"{project_folder}/m{now.month}"):
+        mkdir(f"{project_folder}/m{now.month}")
+
+    project_folder = f"{project_folder}/m{now.month}"
+
+    if not path.exists(f"{project_folder}/d{now.day}"):
+        mkdir(f"{project_folder}/d{now.day}")
+
+    project_folder = f"{project_folder}/d{now.day}"
+
+    if not path.exists(f"{project_folder}/H{now.hour}"):
+        mkdir(f"{project_folder}/H{now.hour}")
+
+    project_folder = f"{project_folder}/H{now.hour}"
+
+    if not path.exists(f"{project_folder}/M{now.minute}"):
+        mkdir(f"{project_folder}/M{now.minute}")
+
+    project_folder = f"{project_folder}/M{now.minute}"
 
     # Save the dataframe to a csv file
 
