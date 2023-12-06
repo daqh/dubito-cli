@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dubito"
-version = "1.0.0"
+version = "0.0.1"
 description = "Subito tracker is a tool to track the price of a product on subito.it"
 readme = "README.md"
 authors = [{ name = "Valerio Di Pasquale", email = "valeriodipasq@gmail.com" }]
