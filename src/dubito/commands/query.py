@@ -35,4 +35,64 @@ def query(query: str, url: str, include: list[str], exclude: list[str], minimum_
 
     df = subito_list_page_items_dataframe(subito_list_page)
 
+    head_filter = BaseSubitoListPageFilter()
+
+    # Filer 1: Get everything under the specified price
+    if minimum_price is not None:
+        head_filter = MinimumPriceSubitoListPageFilter(minimum_price, head_filter)
+
+    # Filer 2: Get everything over the specified price
+    if maximum_price is not None:
+        head_filter = MaximumPriceSubitoListPageFilter(maximum_price, head_filter)
     
+    # Filer 3: Get everything that contains the specified keywords
+    if include:
+        head_filter = TitleContainsIncludeSubitoLiistPageFilter(include, head_filter)
+
+    # Filer 4: Get everything that does not contain the specified keywords
+    if exclude:
+        head_filter = TitleContainsExcludeSubitoLiistPageFilter(exclude, head_filter)
+
+    # Filer 5: Remove outliers
+    if remove_outliers:
+        head_filter = RemoveOutliersSubitoListPageFilter(next_filter=head_filter)
+
+    df = head_filter.handle(df)
+
+    # Finally, sort by price
+    df = df.sort_values(by=["price"])
+
+    # Check if "results" folder exists
+    if not path.exists("results"):
+        mkdir("results")
+
+    project_name = query.replace(" ", "_") # Replace spaces with underscores in the query
+    project_folder = f"results/{project_name}"
+
+    if not path.exists(project_folder):
+        mkdir(project_folder)
+
+    now = datetime.now()
+
+    # Building folders
+
+    project_folder = f"{project_folder}/y{now.year}m{now.month}d{now.day}H{now.hour}M{now.minute}"
+
+    if not path.exists(project_folder):
+        mkdir(project_folder)
+
+    # Save the dataframe to a csv file
+
+    df.to_csv(f"{project_folder}/subito_list_page_items.csv")
+
+    # Plot the results
+    sns.displot(df, x="price", hue="sold", kde=True, multiple="stack")
+    plt.xlabel("Price")
+    plt.savefig(f"{project_folder}/price_distribution.png")
+
+    df["price"].describe().to_csv(f"{project_folder}/statistics.csv")
+    
+    df.where(df["sold"] == True)["price"].describe().to_csv(f"{project_folder}/statistics_sold.csv")
+
+    df.where(df["sold"] == False)["price"].describe().to_csv(f"{project_folder}/statistics_unsold.csv")
+
