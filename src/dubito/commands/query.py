@@ -6,7 +6,6 @@ from dubito.subito_list_page import SubitoListPage, SubitoListPageQuery, subito_
 import logging
 from dubito.database import db
 
-# TODO: Remove unnecessary arguments
 def query(query: str, url: str, install_cache: bool) -> None:
 
     if install_cache:
@@ -22,16 +21,19 @@ def query(query: str, url: str, install_cache: bool) -> None:
 
     # Convert the downloaded items to a pandas dataframe and applies some filters
 
-    current_subito_list_page = None
-    for subito_list_page_item in subito_list_page_item_iterator(subito_list_page):
-        if not current_subito_list_page or current_subito_list_page != subito_list_page_item.subito_list_page:
-            if current_subito_list_page:
-                print("]")
-            current_subito_list_page = subito_list_page_item.subito_list_page
-            print(f"{current_subito_list_page.page_number}\t[", end='', flush=True)
-        print(".", end="", flush=True)
-        logging.debug(f'[bold dark_orange blink]Saving[/bold dark_orange blink] extracted Subito list page {subito_list_page_item.subito_list_page}')
-        subito_list_page_item.subito_list_page.save()
-        logging.debug(f'[bold dark_orange blink]Saving[/bold dark_orange blink] extracted Subito list page {subito_list_page_item}')
-        subito_list_page_item.save()
-    print()
+    # This is a transaction, if something goes wrong, the transaction is rolled back
+    # In this case, the transaction also speed up the process
+    with db.atomic():
+        current_subito_list_page = None
+        for subito_list_page_item in subito_list_page_item_iterator(subito_list_page):
+            if not current_subito_list_page or current_subito_list_page != subito_list_page_item.subito_list_page:
+                if current_subito_list_page:
+                    print("]")
+                current_subito_list_page = subito_list_page_item.subito_list_page
+                print(f"{current_subito_list_page.page_number}\t[", end='', flush=True)
+            print(".", end="", flush=True)
+            logging.debug(f'[bold dark_orange blink]Saving[/bold dark_orange blink] extracted Subito list page {subito_list_page_item.subito_list_page}')
+            subito_list_page_item.subito_list_page.save()
+            logging.debug(f'[bold dark_orange blink]Saving[/bold dark_orange blink] extracted Subito list page {subito_list_page_item}')
+            subito_list_page_item.save()
+        print()
