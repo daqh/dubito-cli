@@ -11,14 +11,13 @@ from datetime import datetime
 from dubito.subito_list_page_filter import BaseSubitoListPageFilter
 from dubito.filters import MinimumPriceSubitoListPageFilter, MaximumPriceSubitoListPageFilter, TitleContainsIncludeSubitoLiistPageFilter, TitleContainsExcludeSubitoLiistPageFilter, RemoveOutliersSubitoListPageFilter
 
-def query(query: str, url: str, include: list[str], exclude: list[str], minimum_price: float, maximum_price: float, install_cache: bool, verbose: bool, remove_outliers: bool) -> None:
+def query(query: str, url: str, include: list[str], exclude: list[str], minimum_price: float, maximum_price: float, install_cache: bool, log_level: str, remove_outliers: bool) -> None:
 
-    if verbose:
-        logging.basicConfig(
-            level=logging.INFO,
-            format="%(message)s",
-            handlers=[RichHandler(markup=True)],
-        )
+    logging.basicConfig(
+        level=log_level,
+        format="%(message)s",
+        handlers=[RichHandler(markup=True)],
+    )
 
     if install_cache:
         logging.info("Installing cache")
@@ -34,5 +33,7 @@ def query(query: str, url: str, include: list[str], exclude: list[str], minimum_
     # Convert the downloaded items to a pandas dataframe and applies some filters
 
     for subito_list_page_item in subito_list_page_item_iterator(subito_list_page):
-        print(subito_list_page_item.subito_list_page.save())
-        print(subito_list_page_item.save())
+        subito_list_page_item.subito_list_page.save()
+        logging.debug(subito_list_page_item.subito_list_page)
+        subito_list_page_item.save()
+        logging.debug(subito_list_page_item)
