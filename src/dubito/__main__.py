@@ -1,5 +1,5 @@
 import argparse
-from dubito.commands import query
+from dubito.commands import query, generate
 
 def define_query_parser(query_parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     query_or_url_group = query_parser.add_mutually_exclusive_group(required=True)
@@ -24,11 +24,14 @@ def main():
     subparsers = parser.add_subparsers(help='sub-command help', dest='subparser_name', required=True)
 
     query_parser = define_query_parser(subparsers.add_parser('query', help='Get Subito insertions from a query or a url.'))
+    generate_parser = subparsers.add_parser('generate', help='Generate a Dubito project.')
 
     args = parser.parse_args()
 
     if args.subparser_name == 'query':
         query(args.query, args.url, args.include, args.exclude, args.minimum_price, args.maximum_price, args.install_cache, args.log_level, args.remove_outliers)
+    elif args.subparser_name == 'generate':
+        generate()
 
 if __name__ == "__main__":
     main()

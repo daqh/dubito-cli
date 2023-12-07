@@ -7,14 +7,9 @@ import pandas as pd
 import logging
 from peewee import *
 
-from dubito.database import db
+from dubito.base_model import BaseModel
 
 db_table = "subito_list_page"
-
-class BaseModel(Model):
-
-    class Meta:
-        database = db
 
 class SubitoListPage(BaseModel):
     '''A Subito list page.
@@ -143,8 +138,6 @@ class SubitoListPageQuery(SubitoListPage):
 
     class Meta:
         db_table = db_table
-
-db.create_tables([SubitoListPage])
 
 class ExtractedSubitoListPage(SubitoListPage):
     '''A Subito list page with an extractor.
