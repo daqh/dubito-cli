@@ -309,23 +309,28 @@ def transform_extracted_subito_list_page(extracted_subito_list_page: ExtractedSu
         raise ValueError("The Subito List Page is empty.")
     subito_list_page_items = list()
     for subito_list_page_item in extracted_subito_list_page_items:
+        shipping_available = "spedizione disponibile" in subito_list_page_item["price"].lower()
+        if subito_list_page_item["price"]:
+            price = subito_list_page_item["price"].split()[0].replace(".", "").replace(",", ".")
+        # subito_list_page_item["identifier"] = subito_list_page_item["url"].split("-")[-1].split(".")[0]
+        sold = bool(subito_list_page_item["sold"])
+        try:
+            price = float(price)
+        except:
+            price = None
         subito_list_page_item = SubitoInsertion(
-            title=subito_list_page_item["title"],
-            url=subito_list_page_item["url"],
+            title = subito_list_page_item["title"],
+            url = subito_list_page_item["url"],
+            shipping_available = shipping_available,
+            thumbnail = subito_list_page_item["thumbnail"],
+            city = subito_list_page_item["city"],
+            state = subito_list_page_item["state"],
+            # time = subito_list_page_item["time"], TODO: convert this to datetime
+            price = price,
+            sold = sold,
             subito_list_page = extracted_subito_list_page,
         )
         subito_list_page_items.append(subito_list_page_item)
-        # subito_list_page_item["page"] = extracted_subito_list_page.page_number
-        # subito_list_page_item["timestamp"] = datetime.now()
-        # subito_list_page_item["shipping_available"] = "spedizione disponibile" in subito_list_page_item["price"].lower()
-        # if subito_list_page_item["price"]:
-        #     subito_list_page_item["price"] = subito_list_page_item["price"].split()[0].replace(".", "").replace(",", ".")
-        # subito_list_page_item["identifier"] = subito_list_page_item["url"].split("-")[-1].split(".")[0]
-        # subito_list_page_item["sold"] = bool(subito_list_page_item["sold"])
-        # try:
-        #     subito_list_page_item["price"] = float(subito_list_page_item["price"])
-        # except:
-        #     subito_list_page_item["price"] = None
     return TransformedSubitoListPage(extracted_subito_list_page, subito_list_page_items)
 
 def extract_and_transform_subito_list_page(subito_list_page: SubitoListPage) -> TransformedSubitoListPage:
