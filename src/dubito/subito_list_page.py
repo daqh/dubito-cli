@@ -95,7 +95,7 @@ class SubitoListPage(BaseModel):
         return SubitoListPageQuery(self.query, page_number)
 
     def __str__(self) -> str:
-        return f"({self.id} {self.__class__.__name__}: {self.url})"
+        return f"{self.__class__.__name__} ({self.id}, \"{self.query}\", {self.page_number})"
 
     class Meta:
         db_table = db_table
