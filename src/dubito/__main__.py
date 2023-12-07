@@ -10,11 +10,8 @@ def define_query_parser(query_parser: argparse.ArgumentParser) -> argparse.Argum
     query_parser.add_argument('--minimum-price', type=int, help='The minimum price.')
     query_parser.add_argument('--maximum-price', type=int, help='The maximum price.')
     query_parser.add_argument('--install-cache', action='store_true', help='Install the cache.', default=False)
-    query_parser.add_argument('-v', '--verbose', action='store_true', help='Verbose.', default=False)
     query_parser.add_argument('--remove-outliers', action='store_true', help='Remove outliers.', default=False)
     return query_parser
-
-from subito_list_page import SubitoListPage
 
 def main():
     parser = argparse.ArgumentParser(
@@ -22,6 +19,7 @@ def main():
         description='Get Subito insertions from a query or a url.',
         epilog='Enjoy the program! :)',
     )
+    parser.add_argument('-l', '--log-level', type=str, choices=['INFO', 'DEBUG', 'WARNING', 'ERROR', 'CRITICAL'], help='Log level.', default='INFO')
 
     subparsers = parser.add_subparsers(help='sub-command help', dest='subparser_name', required=True)
 
@@ -30,7 +28,7 @@ def main():
     args = parser.parse_args()
 
     if args.subparser_name == 'query':
-        query(args.query, args.url, args.include, args.exclude, args.minimum_price, args.maximum_price, args.install_cache, args.verbose, args.remove_outliers)
+        query(args.query, args.url, args.include, args.exclude, args.minimum_price, args.maximum_price, args.install_cache, args.log_level, args.remove_outliers)
 
 if __name__ == "__main__":
     main()
