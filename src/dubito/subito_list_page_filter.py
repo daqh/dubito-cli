@@ -2,6 +2,7 @@ import pandas as pd
 from abc import ABC, abstractmethod
 from typing import Optional
 
+@DeprecationWarning
 class SubitoListPageFilter(ABC):
     '''Filter for subito list page items.'''
 
