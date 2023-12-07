@@ -306,7 +306,7 @@ def transform_extracted_subito_list_page(extracted_subito_list_page: ExtractedSu
         shipping_available = "spedizione disponibile" in subito_list_page_item["price"].lower()
         if subito_list_page_item["price"]:
             price = subito_list_page_item["price"].split()[0].replace(".", "").replace(",", ".")
-        # subito_list_page_item["identifier"] = subito_list_page_item["url"].split("-")[-1].split(".")[0]
+        # subito_list_page_item["identifier"] = subito_list_page_item["url"].split("-")[-1].split(".")[0] TODO: add identifier
         sold = bool(subito_list_page_item["sold"])
         try:
             price = float(price)

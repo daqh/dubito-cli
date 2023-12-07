@@ -10,6 +10,7 @@ from datetime import datetime
 from dubito.subito_list_page_filter import BaseSubitoListPageFilter
 from dubito.filters import MinimumPriceSubitoListPageFilter, MaximumPriceSubitoListPageFilter, TitleContainsIncludeSubitoLiistPageFilter, TitleContainsExcludeSubitoLiistPageFilter, RemoveOutliersSubitoListPageFilter
 
+# TODO: Remove unnecessary arguments
 def query(query: str, url: str, include: list[str], exclude: list[str], minimum_price: float, maximum_price: float, install_cache: bool, remove_outliers: bool) -> None:
 
     if install_cache:
