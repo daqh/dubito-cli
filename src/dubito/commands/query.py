@@ -3,7 +3,6 @@ from datetime import timedelta
 import logging
 import validators
 from dubito.subito_list_page import SubitoListPage, SubitoListPageQuery, subito_list_page_item_iterator
-from rich.logging import RichHandler
 from os import path, mkdir
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -11,13 +10,7 @@ from datetime import datetime
 from dubito.subito_list_page_filter import BaseSubitoListPageFilter
 from dubito.filters import MinimumPriceSubitoListPageFilter, MaximumPriceSubitoListPageFilter, TitleContainsIncludeSubitoLiistPageFilter, TitleContainsExcludeSubitoLiistPageFilter, RemoveOutliersSubitoListPageFilter
 
-def query(query: str, url: str, include: list[str], exclude: list[str], minimum_price: float, maximum_price: float, install_cache: bool, log_level: str, remove_outliers: bool) -> None:
-
-    logging.basicConfig(
-        level=log_level,
-        format="%(message)s",
-        handlers=[RichHandler(markup=True)],
-    )
+def query(query: str, url: str, include: list[str], exclude: list[str], minimum_price: float, maximum_price: float, install_cache: bool, remove_outliers: bool) -> None:
 
     if install_cache:
         logging.info("Installing cache")

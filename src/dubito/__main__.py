@@ -1,5 +1,7 @@
 import argparse
 from dubito.commands import query, generate
+from rich.logging import RichHandler
+import logging
 
 def define_query_parser(query_parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     query_or_url_group = query_parser.add_mutually_exclusive_group(required=True)
@@ -28,8 +30,16 @@ def main():
 
     args = parser.parse_args()
 
+    log_level = args.log_level
+
+    logging.basicConfig(
+        level=log_level,
+        format="%(message)s",
+        handlers=[RichHandler(markup=True)],
+    )
+
     if args.subparser_name == 'query':
-        query(args.query, args.url, args.include, args.exclude, args.minimum_price, args.maximum_price, args.install_cache, args.log_level, args.remove_outliers)
+        query(args.query, args.url, args.include, args.exclude, args.minimum_price, args.maximum_price, args.install_cache, args.remove_outliers)
     elif args.subparser_name == 'generate':
         generate()
 
