@@ -90,7 +90,7 @@ class SubitoListPage(BaseModel):
         return SubitoListPageQuery(self.query, page_number)
 
     def __str__(self) -> str:
-        return f"{self.__class__.__name__} ({self.id}, \"{self.query}\", {self.page_number})"
+        return f"{self.__class__.__name__}({self.id}, \"{self.query}\", {self.page_number})"
 
     class Meta:
         db_table = db_table
@@ -272,7 +272,7 @@ def extract_subito_list_page(subito_list_page: SubitoListPage) -> ExtractedSubit
     ExtractedSubitoListPage
         The extracted Subito list page.
     '''
-    logging.info(f'[bold yellow blink]Extracting[/bold yellow blink] Subito list page {subito_list_page.url}')
+    logging.info(f'[bold yellow blink]Extracting[/bold yellow blink] Subito list page {subito_list_page}')
     try:
         response_text = simplified_get(subito_list_page.url)
     except Exception as e:
@@ -294,11 +294,12 @@ def transform_extracted_subito_list_page(extracted_subito_list_page: ExtractedSu
     TransformedSubitoListPage
         The transformed Subito list page.
     '''
-    logging.info(f'[bold green blink]Transforming[/bold green blink] extracted Subito list page {extracted_subito_list_page.url}')
+    logging.info(f'[bold green blink]Transforming[/bold green blink] extracted Subito list page {extracted_subito_list_page}')
     response_text = extracted_subito_list_page.response_text
     result = __subito_list_page_extractor.extract(response_text)
     extracted_subito_list_page_items = result["subito_list_page_items"]
     if not extracted_subito_list_page_items:
+        logging.info(f'[bold red blink]Finishing[/bold red blink] Subito list page {extracted_subito_list_page} is empty')
         raise ValueError("The Subito List Page is empty.")
     subito_list_page_items = list()
     for subito_list_page_item in extracted_subito_list_page_items:
