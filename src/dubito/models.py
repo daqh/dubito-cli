@@ -47,3 +47,6 @@ class SubitoInsertion(BaseModel):
     def __str__(self):
 
         return f'{self.__class__.__name__}({self.id}, {self.title}, {self.subito_list_page.page_number})'
+
+    class Meta:
+        db_table = 'subito_insertion'

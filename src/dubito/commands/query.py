@@ -7,7 +7,7 @@ import logging
 from dubito.database import db
 
 # TODO: Remove unnecessary arguments
-def query(query: str, url: str, include: list[str], exclude: list[str], minimum_price: float, maximum_price: float, install_cache: bool, remove_outliers: bool) -> None:
+def query(query: str, url: str, install_cache: bool) -> None:
 
     if install_cache:
         logging.debug("Installing cache")
@@ -24,14 +24,11 @@ def query(query: str, url: str, include: list[str], exclude: list[str], minimum_
 
     current_subito_list_page = None
     for subito_list_page_item in subito_list_page_item_iterator(subito_list_page):
-        if not current_subito_list_page:
-            print()
+        if not current_subito_list_page or current_subito_list_page != subito_list_page_item.subito_list_page:
+            if current_subito_list_page:
+                print("]")
             current_subito_list_page = subito_list_page_item.subito_list_page
-            print(current_subito_list_page.page_number, end='', flush=True)
-        elif current_subito_list_page != subito_list_page_item.subito_list_page:
-            print()
-            current_subito_list_page = subito_list_page_item.subito_list_page
-            print(current_subito_list_page.page_number, end='', flush=True)
+            print(f"{current_subito_list_page.page_number}\t[", end='', flush=True)
         print(".", end="", flush=True)
         logging.debug(f'[bold dark_orange blink]Saving[/bold dark_orange blink] extracted Subito list page {subito_list_page_item.subito_list_page}')
         subito_list_page_item.subito_list_page.save()
