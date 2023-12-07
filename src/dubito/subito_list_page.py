@@ -375,27 +375,3 @@ def subito_list_page_item_iterator(subito_list_page: SubitoListPage) -> Iterator
             break           # Stop iterating
         for transformed_subito_list_page_item in transformed_subito_list_page.subito_list_page_items:
             yield transformed_subito_list_page_item
-
-@DeprecationWarning
-def subito_list_page_items_dataframe(subito_list_page: SubitoListPage) -> pd.DataFrame:
-    '''Returns the items of a Subito list page as a pandas dataframe.
-
-    Parameters
-    ----------
-    subito_list_page : SubitoListPage
-        The Subito list page.
-
-    Returns
-    -------
-    pd.DataFrame
-        The items of the Subito list page as a pandas dataframe.
-
-    Example
-    -------
-    >>> from subito_list_page import subito_list_page_items_dataframe
-    >>> subito_list_page_items_dataframe(subito_list_page)
-    '''
-    subito_list_page_items = list(subito_list_page_item_iterator(subito_list_page))
-    df = pd.DataFrame(subito_list_page_items).set_index("identifier")
-    df = df[~df.index.duplicated(keep='first')]
-    return df
