@@ -3,6 +3,53 @@ from peewee import *
 from datetime import datetime
 from dubito.base_model import BaseModel
 
+class SubitoQuery(BaseModel):
+    '''
+    A collection of Subito list pages.
+    
+    Attributes:
+    ----------
+    id: int
+        The id of the collection
+    name: str
+        The name of the collection
+    '''
+
+    id = AutoField()
+    timestamp = DateTimeField(default=datetime.now)
+    query = CharField()
+    subito_list_pages = ManyToManyField(SubitoListPage)
+
+    def __str__(self):
+        return f'{self.__class__.__name__}({self.id}, {self.query})'
+
+    class Meta:
+        db_table = 'subito_query'
+
+class SubitoQuerySubitoListPageThrough(BaseModel):
+    '''
+    A Subito list page through model.
+    
+    Attributes:
+    ----------
+    id: int
+        The id of the model
+    subito_list_page: SubitoListPage
+        The subito list page
+    subito_query: SubitoQuery
+        The subito query
+    '''
+
+    id = AutoField()
+    subitolistpage_id = ForeignKeyField(SubitoListPage, backref='subito_list_pages')
+    subitoquery_id = ForeignKeyField(SubitoQuery, backref='subito_queries')
+
+    def __str__(self):
+        return f'{self.__class__.__name__}({self.id}, {self.subito_list_page.page_number}, {self.subito_query.query})'
+
+    class Meta:
+        db_table = 'subito_query_subito_list_page_through'
+
 class SubitoInsertion(BaseModel):
     '''
     A Subito insertion.
