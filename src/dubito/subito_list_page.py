@@ -3,7 +3,7 @@ from dubito.utils import simplified_get, extractors_directory
 from urllib.parse import urlparse, parse_qs, quote
 from datetime import datetime
 from typing import Iterator
-import pandas as pd
+from datetime import timedelta
 import logging
 from peewee import *
 
@@ -308,10 +308,28 @@ def transform_extracted_subito_list_page(extracted_subito_list_page: ExtractedSu
             price = subito_list_page_item["price"].split()[0].replace(".", "").replace(",", ".")
         # subito_list_page_item["identifier"] = subito_list_page_item["url"].split("-")[-1].split(".")[0] TODO: add identifier
         sold = bool(subito_list_page_item["sold"])
+        # TODO: Better variable names and structure for this code
         try:
             price = float(price)
         except:
             price = None
+        created_at = subito_list_page_item["created_at"]
+        if created_at:
+            created_at = created_at.split("alle")
+            created_at = [t.strip() for t in created_at]
+            day, hour = created_at
+            if created_at[0] == "Oggi":
+                day = datetime.today()
+            elif created_at[0] == "Ieri":
+                day = (datetime.today() - timedelta(days=1))
+            else:
+                # moths are in italian, an example of the value for day in this cae is "12 giu"
+                it_months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"]
+                day = day.split()
+                day[1] = it_months.index(day[1]) + 1
+                day = datetime.today().replace(day=int(day[0]), month=int(day[1]))
+            hour = datetime.time(datetime.strptime(hour, "%H:%M"))
+            created_at = datetime.combine(day, hour)
         subito_list_page_item = SubitoInsertion(
             title = subito_list_page_item["title"],
             url = subito_list_page_item["url"],
@@ -319,7 +337,7 @@ def transform_extracted_subito_list_page(extracted_subito_list_page: ExtractedSu
             thumbnail = subito_list_page_item["thumbnail"],
             city = subito_list_page_item["city"],
             state = subito_list_page_item["state"],
-            # time = subito_list_page_item["time"], TODO: convert this to datetime
+            created_at = created_at,
             price = price,
             sold = sold,
             subito_list_page = extracted_subito_list_page,

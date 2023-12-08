@@ -1,7 +1,6 @@
 from dubito.subito_list_page import SubitoListPage
 from peewee import *
 from datetime import datetime
-
 from dubito.base_model import BaseModel
 
 class SubitoInsertion(BaseModel):
@@ -24,6 +23,8 @@ class SubitoInsertion(BaseModel):
         The city of the insertion
     state: str
         The state of the insertion
+    created_at: datetime
+        The creation date of the insertion
     price: float
         The price of the insertion
     sold: bool
@@ -39,13 +40,12 @@ class SubitoInsertion(BaseModel):
     thumbnail = CharField()
     city = CharField(null=True)
     state = CharField(null=True)
-    # TODO: Add time field
+    created_at = DateTimeField(null=True)
     price = FloatField(null=True)
     sold = BooleanField()
     subito_list_page = ForeignKeyField(SubitoListPage, backref='subito_insertions')
 
     def __str__(self):
-
         return f'{self.__class__.__name__}({self.id}, {self.title}, {self.subito_list_page.page_number})'
 
     class Meta:
