@@ -6,7 +6,6 @@ from typing import Iterator
 from datetime import timedelta
 import logging
 from peewee import *
-
 from dubito.base_model import BaseModel
 
 db_table = "subito_list_page"
