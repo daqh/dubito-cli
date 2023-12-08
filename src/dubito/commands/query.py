@@ -19,8 +19,6 @@ def query(query: str, url: str, install_cache: bool) -> None:
             raise Exception(f'"{url}" is not a valid url, You must specify a valid url.')
         subito_list_page = SubitoListPage(url)
 
-    # Convert the downloaded items to a pandas dataframe and applies some filters
-
     # This is a transaction, if something goes wrong, the transaction is rolled back
     # In this case, the transaction also speed up the process
     with db.atomic():

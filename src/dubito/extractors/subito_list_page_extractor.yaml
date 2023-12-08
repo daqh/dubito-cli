@@ -25,6 +25,6 @@ subito_list_page_items:
     state:
       css: '.index-module_container__noDE3 span:nth-of-type(2)'
       type: Text
-    time:
+    created_at:
       css: '.index-module_container__noDE3 span:nth-of-type(3)'
       type: Text
