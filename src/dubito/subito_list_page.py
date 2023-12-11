@@ -315,6 +315,8 @@ def transform_extracted_subito_list_page(extracted_subito_list_page: ExtractedSu
         created_at = subito_list_page_item["created_at"]
         if created_at:
             created_at = created_at.split("alle")
+            if len(created_at) == 1:
+                created_at = created_at[0].split("all'")
             created_at = [t.strip() for t in created_at]
             day, hour = created_at
             if created_at[0] == "Oggi":
