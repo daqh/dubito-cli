@@ -1,5 +1,6 @@
 import requests
 import pathlib
+import logging
 
 extractors_directory = pathlib.Path(__file__).parent.absolute() / "extractors"
 
@@ -12,6 +13,7 @@ def simplified_get(url: str) -> str:
 
     @return: The response from the page as an html string
     '''
+    logging.debug(f"Requesting {url}")
     response = requests.get(url)
     if(response.status_code >= 500):
         raise Exception(f"Error {response.status_code}")

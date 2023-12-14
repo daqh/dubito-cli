@@ -3,10 +3,14 @@ from dubito.utils import simplified_get, extractors_directory
 from urllib.parse import urlparse, parse_qs, quote
 from datetime import datetime
 from typing import Iterator
-import pandas as pd
+from datetime import timedelta
 import logging
+from peewee import *
+from dubito.base_model import BaseModel
 
-class SubitoListPage:
+db_table = "subito_list_page"
+
+class SubitoListPage(BaseModel):
     '''A Subito list page.
     
     Attributes
@@ -24,6 +28,9 @@ class SubitoListPage:
         If the url does not contain a query.
         If the page number is less than 1.
     '''
+
+    id = PrimaryKeyField()
+    url = CharField()
 
     def __init__(self, url: str) -> None:
         '''Initializes the page.
@@ -46,7 +53,8 @@ class SubitoListPage:
         >>> subito_list_page.url
         'https://www.subito.it/annunci-lazio/vendita/usato/?q=macbook+pro&o=1'
         '''
-        self.__url = url
+        super().__init__(url=url)
+        self.url = url
         parsed_url = urlparse(url)
         parsed_qs = parse_qs(parsed_url.query)
         try:
@@ -58,11 +66,6 @@ class SubitoListPage:
             raise ValueError("The page number must be greater than 0.")
         self.__page_number = int(page_number)
 
-    @property
-    def url(self) -> str:
-        '''The url of the page.'''
-        return self.__url
-    
     @property
     def query(self) -> str:
         '''The query of the page.'''
@@ -86,7 +89,10 @@ class SubitoListPage:
         return SubitoListPageQuery(self.query, page_number)
 
     def __str__(self) -> str:
-        return f"({self.__class__.__name__}: {self.url})"
+        return f"{self.__class__.__name__}({self.id}, \"{self.query}\", {self.page_number})"
+
+    class Meta:
+        db_table = db_table
 
 class SubitoListPageQuery(SubitoListPage):
     '''A Subito list page with a query.
@@ -128,6 +134,9 @@ class SubitoListPageQuery(SubitoListPage):
         url = self.__url.format(category=category, query=query, page_number=page_number)
         url = quote(url, safe=":/?=&")
         super().__init__(url)
+
+    class Meta:
+        db_table = db_table
 
 class ExtractedSubitoListPage(SubitoListPage):
     '''A Subito list page with an extractor.
@@ -185,6 +194,11 @@ class ExtractedSubitoListPage(SubitoListPage):
         extracted_subito_list_page = extract_subito_list_page(subito_list_page)
         return extracted_subito_list_page
 
+    class Meta:
+        db_table = db_table
+
+from dubito.models import SubitoInsertion
+
 class TransformedSubitoListPage(ExtractedSubitoListPage):
     '''A Subito list page with a transformer.
     
@@ -228,7 +242,7 @@ class TransformedSubitoListPage(ExtractedSubitoListPage):
         self.__subito_list_page_items = subito_list_page_items
         
     @property
-    def subito_list_page_items(self):
+    def subito_list_page_items(self) -> list[SubitoInsertion]:
         '''The items of the page.'''
         return self.__subito_list_page_items
     
@@ -240,6 +254,9 @@ class TransformedSubitoListPage(ExtractedSubitoListPage):
         except ValueError:
             raise StopIteration
         return transformed_subito_list_page
+
+    class Meta:
+        db_table = db_table
 
 def extract_subito_list_page(subito_list_page: SubitoListPage) -> ExtractedSubitoListPage:
     '''Extracts a Subito list page.
@@ -254,7 +271,7 @@ def extract_subito_list_page(subito_list_page: SubitoListPage) -> ExtractedSubit
     ExtractedSubitoListPage
         The extracted Subito list page.
     '''
-    logging.info(f'[bold yellow blink]Extracting[/bold yellow blink] Subito list page {subito_list_page.url}')
+    logging.debug(f'[bold yellow blink]Extracting[/bold yellow blink] Subito list page {subito_list_page}')
     try:
         response_text = simplified_get(subito_list_page.url)
     except Exception as e:
@@ -276,24 +293,57 @@ def transform_extracted_subito_list_page(extracted_subito_list_page: ExtractedSu
     TransformedSubitoListPage
         The transformed Subito list page.
     '''
-    logging.info(f'[bold green blink]Transforming[/bold green blink] extracted Subito list page {extracted_subito_list_page.url}')
+    logging.debug(f'[bold green blink]Transforming[/bold green blink] extracted Subito list page {extracted_subito_list_page}')
     response_text = extracted_subito_list_page.response_text
     result = __subito_list_page_extractor.extract(response_text)
-    subito_list_page_items = result["subito_list_page_items"]
-    if not subito_list_page_items:
+    extracted_subito_list_page_items = result["subito_list_page_items"]
+    if not extracted_subito_list_page_items:
+        logging.debug(f'[bold red blink]Finishing[/bold red blink] Subito list page {extracted_subito_list_page} is empty')
         raise ValueError("The Subito List Page is empty.")
-    for subito_list_page_item in subito_list_page_items:
-        subito_list_page_item["page"] = extracted_subito_list_page.page_number
-        subito_list_page_item["timestamp"] = datetime.now()
-        subito_list_page_item["shipping_available"] = "spedizione disponibile" in subito_list_page_item["price"].lower()
+    subito_list_page_items = list()
+    for subito_list_page_item in extracted_subito_list_page_items:
+        shipping_available = "spedizione disponibile" in subito_list_page_item["price"].lower()
         if subito_list_page_item["price"]:
-            subito_list_page_item["price"] = subito_list_page_item["price"].split()[0].replace(".", "").replace(",", ".")
-        subito_list_page_item["identifier"] = subito_list_page_item["url"].split("-")[-1].split(".")[0]
-        subito_list_page_item["sold"] = bool(subito_list_page_item["sold"])
+            price = subito_list_page_item["price"].split()[0].replace(".", "").replace(",", ".")
+        # subito_list_page_item["identifier"] = subito_list_page_item["url"].split("-")[-1].split(".")[0] TODO: add identifier
+        sold = bool(subito_list_page_item["sold"])
+        # TODO: Better variable names and structure for this code
         try:
-            subito_list_page_item["price"] = float(subito_list_page_item["price"])
+            price = float(price)
         except:
-            subito_list_page_item["price"] = None
+            price = None
+        created_at = subito_list_page_item["created_at"]
+        if created_at:
+            created_at = created_at.split("alle")
+            if len(created_at) == 1:
+                created_at = created_at[0].split("all'")
+            created_at = [t.strip() for t in created_at]
+            day, hour = created_at
+            if created_at[0] == "Oggi":
+                day = datetime.today()
+            elif created_at[0] == "Ieri":
+                day = (datetime.today() - timedelta(days=1))
+            else:
+                # moths are in italian, an example of the value for day in this cae is "12 giu"
+                it_months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"]
+                day = day.split()
+                day[1] = it_months.index(day[1]) + 1
+                day = datetime.today().replace(day=int(day[0]), month=int(day[1]))
+            hour = datetime.time(datetime.strptime(hour, "%H:%M"))
+            created_at = datetime.combine(day, hour)
+        subito_list_page_item = SubitoInsertion(
+            title = subito_list_page_item["title"],
+            url = subito_list_page_item["url"],
+            shipping_available = shipping_available,
+            thumbnail = subito_list_page_item["thumbnail"],
+            city = subito_list_page_item["city"],
+            state = subito_list_page_item["state"],
+            created_at = created_at,
+            price = price,
+            sold = sold,
+            subito_list_page = extracted_subito_list_page,
+        )
+        subito_list_page_items.append(subito_list_page_item)
     return TransformedSubitoListPage(extracted_subito_list_page, subito_list_page_items)
 
 def extract_and_transform_subito_list_page(subito_list_page: SubitoListPage) -> TransformedSubitoListPage:
@@ -338,26 +388,3 @@ def subito_list_page_item_iterator(subito_list_page: SubitoListPage) -> Iterator
             break           # Stop iterating
         for transformed_subito_list_page_item in transformed_subito_list_page.subito_list_page_items:
             yield transformed_subito_list_page_item
-
-def subito_list_page_items_dataframe(subito_list_page: SubitoListPage) -> pd.DataFrame:
-    '''Returns the items of a Subito list page as a pandas dataframe.
-
-    Parameters
-    ----------
-    subito_list_page : SubitoListPage
-        The Subito list page.
-
-    Returns
-    -------
-    pd.DataFrame
-        The items of the Subito list page as a pandas dataframe.
-
-    Example
-    -------
-    >>> from subito_list_page import subito_list_page_items_dataframe
-    >>> subito_list_page_items_dataframe(subito_list_page)
-    '''
-    subito_list_page_items = list(subito_list_page_item_iterator(subito_list_page))
-    df = pd.DataFrame(subito_list_page_items).set_index("identifier")
-    df = df[~df.index.duplicated(keep='first')]
-    return df
