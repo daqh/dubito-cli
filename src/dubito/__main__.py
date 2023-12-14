@@ -1,5 +1,5 @@
 import argparse
-from dubito.commands import query, generate, find
+from dubito.commands import query, generate, find, analyze
 from rich.logging import RichHandler
 import logging
 
@@ -27,6 +27,7 @@ def main():
     query_parser = define_query_parser(subparsers.add_parser('query', help='Get Subito insertions from a query or a url.'))
     generate_parser = subparsers.add_parser('generate', help='Generate a Dubito project.')
     find_parser = define_find_parser(subparsers.add_parser('find', help='Find a query in the database.'))
+    analyze_parser = subparsers.add_parser('analyze', help='Analyze a query.')
 
     args = parser.parse_args()
 
@@ -44,6 +45,8 @@ def main():
         generate()
     elif args.subparser_name == 'find':
         find(args.query)
+    elif args.subparser_name == 'analyze':
+        analyze()
 
 if __name__ == "__main__":
     main()

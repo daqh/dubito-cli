@@ -90,6 +90,7 @@ class SubitoInsertion(BaseModel):
     created_at = DateTimeField(null=True)
     price = FloatField(null=True)
     sold = BooleanField()
+    shipping_available = BooleanField()
     subito_list_page = ForeignKeyField(SubitoListPage, backref='subito_insertions')
 
     def __str__(self):
@@ -97,3 +98,6 @@ class SubitoInsertion(BaseModel):
 
     class Meta:
         db_table = 'subito_insertion'
+
+    def download():
+        pass
