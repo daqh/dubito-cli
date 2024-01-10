@@ -87,7 +87,7 @@ class TransformedSubitoDetailPage(ExtractedSubitoDetailPage):
         subito_detail_page_item : dict
             The item of the detail page.
         '''
-        super().__init__(extracted_subito_detail_page, extracted_subito_detail_page.response)
+        super().__init__(extracted_subito_detail_page, extracted_subito_detail_page.response_text)
         self.__subito_detail_page_item = subito_detail_page_item
 
     @property
@@ -102,7 +102,7 @@ def extract_subito_detail_page(subito_detail_page: SubitoDetailPage) -> Extracte
     subito_detail_page : SubitoDetailPage
         The Subito detail page.
     '''
-    logging.info(f"Extracting {subito_detail_page}")
+    logging.debug(f"Extracting {subito_detail_page}")
     response_text = simplified_get(subito_detail_page.url)
     return ExtractedSubitoDetailPage(subito_detail_page, response_text)
 
@@ -118,7 +118,8 @@ def transform_subito_detail_page(extracted_subito_detail_page: ExtractedSubitoDe
     '''
     subito_detail_page_item = __subito_detail_page_extractor.extract(extracted_subito_detail_page.response_text)
     subito_detail_page_item["timestamp"] = datetime.now()
-    subito_detail_page_item["price"] = float(subito_detail_page_item["price"].replace("€", "").replace(".", "").replace(",", "."))
+    if subito_detail_page_item["price"]:
+        subito_detail_page_item["price"] = float(subito_detail_page_item["price"].replace("€", "").replace(".", "").replace(",", "."))
     subito_detail_page_item["shipping_available"] = bool(subito_detail_page_item["shipping_available"])
     subito_detail_page_item["sold"] = bool(subito_detail_page_item["sold"])
     subito_detail_page_item["city"] = subito_detail_page_item["location"].split()[0]

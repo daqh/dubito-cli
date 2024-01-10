@@ -1,5 +1,5 @@
 import argparse
-from dubito.commands import query, generate, find, analyze
+from dubito.commands import query, generate, find, analyze, fetch
 from rich.logging import RichHandler
 import logging
 
@@ -14,6 +14,15 @@ def define_find_parser(find_parser: argparse.ArgumentParser) -> argparse.Argumen
     find_parser.add_argument('query', type=str, help='The query to search.')
     return find_parser
 
+def define_analyze_parser(analyze_parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    analyze_parser.add_argument('keywords', type=str, nargs='+', help='The keywords to analyze.')
+    return analyze_parser
+
+def define_fetch_parser(fetch_parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    fetch_parser.add_argument('url', type=str, help='The url to search.')
+    fetch_parser.add_argument('--language', type=str, help='The language of the url.', default='it')
+    return fetch_parser
+
 def main():
     parser = argparse.ArgumentParser(
         prog='dubito',
@@ -27,7 +36,8 @@ def main():
     query_parser = define_query_parser(subparsers.add_parser('query', help='Get Subito insertions from a query or a url.'))
     generate_parser = subparsers.add_parser('generate', help='Generate a Dubito project.')
     find_parser = define_find_parser(subparsers.add_parser('find', help='Find a query in the database.'))
-    analyze_parser = subparsers.add_parser('analyze', help='Analyze a query.')
+    analyze_parser = define_analyze_parser(subparsers.add_parser('analyze', help='Analyze a query.'))
+    fetch_parser = define_fetch_parser(subparsers.add_parser('fetch', help='Fetch a newspaper.'))
 
     args = parser.parse_args()
 
@@ -46,7 +56,9 @@ def main():
     elif args.subparser_name == 'find':
         find(args.query)
     elif args.subparser_name == 'analyze':
-        analyze()
+        analyze(args.keywords)
+    elif args.subparser_name == 'fetch':
+        fetch(args.url, args.language)
 
 if __name__ == "__main__":
     main()

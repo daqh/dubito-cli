@@ -1,4 +1,4 @@
-from dubito.database import db
+from dubito.database import dubito_db
 import csv
 from sys import stdout
 import logging
@@ -11,7 +11,7 @@ def find(sql: str) -> None:
         sql (str): The query to search.
     '''
     logging.debug(f"Executing query: {sql}")
-    cursor = db.execute_sql(sql)
+    cursor = dubito_db.execute_sql(sql)
     logging.debug("Query executed successfully")
 
     headers = [desc[0] for desc in cursor.description]
