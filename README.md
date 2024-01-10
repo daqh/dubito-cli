@@ -10,7 +10,7 @@ This project was inspired by the [subito-it-searcher](https://github.com/morroli
 
 To install the package you can use pip:
 
-`pip install dubito`
+`pip install -e .`
 
 Running the command:
 
