@@ -26,9 +26,11 @@ def analyze(keywords: list[str]):
 
     df["page"] = df.groupby("slp_id").ngroup() + 1
 
-    report_folder = "report"
+    report_folder = keywords[0] + "_report"
     if not os.path.exists(report_folder):
         os.makedirs(report_folder)
+
+    df.to_csv(os.path.join(report_folder, "data.csv"))
 
     with open(os.path.join(report_folder, 'report.md'), 'w') as f:
         f.write('# Report\n')
@@ -217,10 +219,7 @@ def analyze(keywords: list[str]):
         mpf.make_addplot(macd_signal, panel=2, ylabel="MACD signal", color="orange"),
     ]
 
-    # Add vertical line at the day 22 september 2023
-    plt.axvline(x=pd.to_datetime('2023-09-22'), color='red', linestyle='--')
+    mpf.plot(candles, type="candle", style="yahoo", volume=True, savefig=f"{keywords[0]}_report/price_candles.png", mav=(7, 9, 28), addplot=addplot, tight_layout=True)
 
-    mpf.plot(candles, type="candle", style="yahoo", volume=True, savefig="report/price_candles.png", mav=(7, 9, 28), addplot=addplot, tight_layout=True, vlines=dict(vlines=['2023-09-12', '2023-09-15', '2023-09-22'], linewidths=1.5, colors="gray", alpha=1, linestyle="dashed"))
-
-    with open('report/report.md', 'a') as f:
+    with open(f'{keywords[0]}_report/report.md', 'a') as f:
         f.write('## Price candles\n![Price candles](price_candles.png)\n')

@@ -19,16 +19,18 @@ Running the command:
 The result will be:
 
 ```bash
-usage: dubito [-h] [-l {INFO,DEBUG,WARNING,ERROR,CRITICAL}] {query,generate,find} ...
+usage: dubito [-h] [-l {INFO,DEBUG,WARNING,ERROR,CRITICAL}] {query,generate,find,analyze,fetch} ...
 
 Get Subito insertions from a query or a url.
 
 positional arguments:
-  {query,generate,find}
+  {query,generate,find,analyze,fetch}
                         sub-command help
     query               Get Subito insertions from a query or a url.
     generate            Generate a Dubito project.
     find                Find a query in the database.
+    analyze             Analyze a query.
+    fetch               Fetch a newspaper.
 
 options:
   -h, --help            show this help message and exit
@@ -37,6 +39,12 @@ options:
 
 Enjoy the program! :)
 ```
+
+# Create a new Dubito Project
+
+`dubito generate`
+
+This will create two sqlite databases, in the current folder, to store insertions and newspaper data.
 
 ## Data Extrapolation
 
@@ -69,4 +77,12 @@ Where `query` is an SQL query used to select the data:
 
 # Data visualization
 
-Coming soon...
+```bash
+usage: dubito analyze [-h] keywords [keywords ...]
+
+positional arguments:
+  keywords    The keywords to analyze.
+
+options:
+  -h, --help  show this help message and exit
+```
