@@ -40,13 +40,15 @@ options:
 Enjoy the program! :)
 ```
 
-# Create a new Dubito Project
+## Getting started
+
+### Create a new Dubito Project
 
 `dubito generate`
 
 This will create two sqlite databases, in the current folder, to store insertions and newspaper data.
 
-## Data Extrapolation
+### Data Extrapolation
 
 ```bash
 usage: dubito query [-h] (-q QUERY | --url URL) [--install-cache]
@@ -59,7 +61,7 @@ options:
   --install-cache       Install the cache.
 ```
 
-# Data selection
+### Data selection
 
 ```bash
 usage: dubito find [-h] query
@@ -75,7 +77,7 @@ Where `query` is an SQL query used to select the data:
 
 `dubito find "select s.id, s.title, s.price from subito_insertion as s where s.title like '%iphone 12 mini%' and s.price > 100 order by s.price" > result.csv`
 
-# Data visualization
+### Data visualization
 
 ```bash
 usage: dubito analyze [-h] keywords [keywords ...]
